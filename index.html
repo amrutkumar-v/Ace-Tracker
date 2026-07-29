@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#121212">
+
+    <!-- =========================
+         Basic Page Settings
+    ========================== -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ace Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div id="loginScreen" class="login-screen">
+
+        <div class="login-box">
+    
+            <h1>🚀 Ace Tracker</h1>
+    
+            <input
+                type="text"
+                id="loginName"
+                placeholder="Enter your name">
+    
+            <button id="loginBtn">
+                Enter
+            </button>
+    
+        </div>
+    
+    </div>
+
+    <div class="container">
+
+        <!-- =========================
+             Header
+        ========================== -->
+
+        <header>
+
+            <h1>Ace Tracker</h1>
+
+          
+            <p class="version">🚀 Version 1.0</p>
+
+            <p>Your Personal Habit & Fitness Dashboard</p>
+
+            <p id="currentDate"></p>
+
+            <h3 id="liveClock"></h3>
+
+            <div class="theme-switch">
+                <button id="themeToggle">🌙 Dark Mode</button>
+            </div>
+
+            <!-- =========================
+                 Dashboard Cards
+            ========================== -->
+
+            <div class="dashboard">
+
+                <!-- Level -->
+                <div class="card">
+
+                    <h2>⭐ Level</h2>
+
+                    <p id="levelText">Level 1</p>
+
+                    <div class="xp-bar">
+                        <div id="xpFill" class="xp-fill"></div>
+                    </div>
+
+                    <small id="xpText">0 / 100 XP</small>
+
+                </div>
+
+                <!-- Welcome -->
+                <div class="card">
+
+                    <h2 id="welcomeText">👋 Welcome, Amrut</h2>
+                
+                    <p id="quote">
+                        Stay consistent 💪
+                    </p>
+                    <h3 id="quote"></h3>
+                
+                </div>
+
+                <!-- Progress Ring -->
+                <div class="card">
+
+                    <h2>📊 Progress</h2>
+
+                    <div class="progress-ring">
+
+                        <svg width="170" height="170">
+
+                            <defs>
+
+                                <linearGradient id="progressGradient">
+
+                                    <stop offset="0%" stop-color="#38bdf8"/>
+
+                                    <stop offset="100%" stop-color="#22c55e"/>
+
+                                </linearGradient>
+
+                            </defs>
+
+                            <circle
+                                class="progress-bg"
+                                cx="85"
+                                cy="85"
+                                r="70">
+                            </circle>
+
+                            <circle
+                                class="progress-bar"
+                                id="progressCircle"
+                                cx="85"
+                                cy="85"
+                                r="70">
+                            </circle>
+
+                        </svg>
+
+                        <div class="progress-number" id="progressPercent">
+
+                            0%
+
+                        </div>
+
+                    </div>
+
+                    <p id="progressText">
+
+                        0 / 10 Tasks
+
+                    </p>
+
+                </div>
+
+                <!-- Statistics -->
+
+                <div class="card">
+                    <h2>🔥 Current Streak</h2>
+                    <p id="streakText">0 Days</p>
+                </div>
+
+                <div class="card">
+
+                    <h2>🏆 Best Streak</h2>
+                
+                    <p id="bestStreak">0 Days</p>
+                
+                </div>
+            
+
+                <div class="card">
+                    <h2>🏆 Golden Days</h2>
+                    <p id="goldenDays">0</p>
+                </div>
+
+                <div class="card">
+                    <h2>📈 Completion Rate</h2>
+                    <p id="completionRate">0%</p>
+                </div>
+
+                <div class="card">
+
+                    <h2>⚡ Total XP</h2>
+                
+                    <p id="totalXP">0 XP</p>
+                
+                </div>
+
+                <div class="card">
+                    <h2>⏳ Days Remaining</h2>
+                    <p id="daysRemaining">90</p>
+                </div>
+
+                <div class="card">
+                    <h2>📋 Total Tasks</h2>
+                    <p id="totalTasks">0 / 900</p>
+                </div>
+
+                <div class="card">
+                    <h2>🎯 Today's Score</h2>
+                    <p id="todayScore">0%</p>
+                </div>
+
+                <div class="card">
+                    <h2>📅 Challenge Day</h2>
+                    <p id="challengeDay">Day 1 / 90</p>
+                </div>
+
+            </div>
+
+        </header>
+
+    </div>
+
+    <!-- =========================
+         Daily Tasks
+    ========================== -->
+
+    <section class="tasks">
+
+        <h2>Today's Tasks</h2>
+
+        <div class="task-list">
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>😴 Get Good Sleep</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>💪 Eat 100g+ Protein</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>🏋 Hit the Gym</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>💧 Drink 4 Litres Water</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>⚡ Take Creatine</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>💻 Learn Cybersecurity</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>🚶 Walk 8000 Steps</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>🥗 Stay in Calorie Deficit</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>🔥 30 Push-ups</span>
+            </label>
+
+            <label class="task">
+                <input type="checkbox" class="taskCheck">
+                <span>⭐ Daily Custom Task</span>
+            </label>
+
+        </div>
+
+    </section>
+
+    <!-- =========================
+         90-Day Calendar
+    ========================== -->
+
+    <section class="calendar-section">
+
+        <h2>📅 90-Day Progress</h2>
+
+        <div id="calendar" class="calendar-grid"></div>
+
+    </section>
+
+    <!-- =========================
+         Analytics
+    ========================== -->
+
+    <section class="analytics">
+
+        <h2>📊 Analytics Dashboard</h2>
+
+        <div class="charts">
+
+            <div class="chart-card">
+
+                <h3>📅 Weekly Progress</h3>
+
+                <canvas id="weeklyChart"></canvas>
+
+            </div>
+
+            <div class="chart-card">
+
+                <h3>🥧 Task Distribution</h3>
+
+                <canvas id="pieChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =========================
+         Monthly Status
+    ========================== -->
+
+    <section class="analytics">
+
+        <h2>📅 Monthly Statistics</h2>
+        
+        <div class="dashboard">
+        
+        <div class="card">
+        
+        <h2>📋 Tasks This Month</h2>
+        
+        <p id="monthTasks">0</p>
+        
+        </div>
+        
+        <div class="card">
+        
+        <h2>🏆 Golden Days</h2>
+        
+        <p id="monthGolden">0</p>
+        
+        </div>
+        
+        <div class="card">
+        
+        <h2>📈 Average Score</h2>
+        
+        <p id="monthAverage">0%</p>
+        
+        </div>
+        
+        </div>
+        
+        </section>
+
+
+    <!-- =========================
+         Golden Day Popup
+    ========================== -->
+
+    <div id="goldenPopup" class="popup">
+
+        <div class="popup-content">
+
+            <h2>🏆 Golden Day!</h2>
+
+            <p>You completed all today's tasks! 🔥</p>
+
+            <button id="closePopup">Awesome!</button>
+
+        </div>
+
+    </div>
+
+
+
+    <section class="export-section">
+
+        <h2>📤 Export Progress</h2>
+    
+        <button id="exportBtn" class="export-btn">
+            Download Progress
+        </button>
+    
+    </section>
+
+    <div class="bottom-buttons">
+        <button id="resetBtn">🔄 Reset Progress</button>
+        <button id="logoutBtn">🚪 Logout</button>
+    </div>
+
+    <button id="installBtn" style="display:none;">
+        📲 Install Ace Tracker
+    </button>
+
+    <!-- =========================
+         Footer
+    ========================== -->
+
+    <footer>
+
+        <p>🚀 Ace Tracker Version 1.0</p>
+
+        <p>Built by Amrut with ❤️</p>
+
+    </footer>
+
+    
+
+
+    <!-- =========================
+         JavaScript
+    ========================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
