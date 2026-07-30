@@ -1,4 +1,4 @@
-const CACHE_NAME = "ace-tracker-v1";
+const CACHE_NAME = "ace-tracker-v2";
 
 const filesToCache = [
     "index.html",
@@ -21,7 +21,17 @@ self.addEventListener("install", event => {
 
 // Activate Service Worker
 self.addEventListener("activate", event => {
-    console.log("Ace Tracker Service Worker Activated");
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
 });
 
 

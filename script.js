@@ -347,17 +347,6 @@ function finalizePreviousDay(dateKey) {
 
         saveDayStatus(dayNum, dateKey, completedCount, true);
 
-        if (completedCount > 0) {
-            let earnedXP = completedCount * XP_PER_TASK;
-            const totalCheckboxCount = checkboxes.length || 10;
-
-            if (completedCount === totalCheckboxCount && totalCheckboxCount > 0) {
-                earnedXP += GOLDEN_DAY_BONUS;
-            }
-
-            addXP(earnedXP);
-        }
-
         localStorage.setItem(processedKey, "true");
     } finally {
         processingDates.delete(dateKey);
@@ -402,8 +391,11 @@ function countCompletedCheckboxes() {
 // =====================================================
 
 function addXP(amount) {
-    if (amount <= 0) return;
     totalXP = (Number(localStorage.getItem(STORAGE_KEYS.totalXP)) || 0) + amount;
+
+    // Prevent XP from going below 0
+    if (totalXP < 0) totalXP = 0;
+
     localStorage.setItem(STORAGE_KEYS.totalXP, totalXP);
     updateXP();
 }
@@ -462,8 +454,18 @@ function handleTaskToggle(box, index) {
     }
 
     localStorage.setItem(STORAGE_KEYS.task(index), box.checked);
+    if (box.checked) {
+        addXP(XP_PER_TASK);
+    } else {
+        addXP(-XP_PER_TASK);
+    }
 
     const completed = countCompletedCheckboxes();
+const bonusKey = `goldenBonus-${today}`;
+
+if (completed < checkboxes.length) {
+    localStorage.removeItem(bonusKey);
+}
 
     saveDayStatus(dayNumber, today, completed, false);
     updateProgress();
@@ -611,7 +613,17 @@ function updateStatistics() {
 // =====================================================
 
 function checkGoldenDay(completedCount) {
-    if (completedCount === checkboxes.length && checkboxes.length > 0) {
+    const today = getTodayKey();
+    const bonusKey = `goldenBonus-${today}`;
+
+    if (
+        completedCount === checkboxes.length &&
+        checkboxes.length > 0 &&
+        !localStorage.getItem(bonusKey)
+    ) {
+        addXP(GOLDEN_DAY_BONUS);
+        localStorage.setItem(bonusKey, "true");
+
         if (popup) popup.style.display = "flex";
 
         if (typeof confetti === "function") {
