@@ -1,0 +1,17 @@
+services:
+  ace-tracker:
+    build: .
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      COOKIE_SECURE: "true"
+      DATA_DIR: /data
+    ports:
+      - "3000:3000"
+    volumes:
+      - ace_tracker_data:/data
+    restart: unless-stopped
+
+volumes:
+  ace_tracker_data:

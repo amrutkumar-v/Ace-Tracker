@@ -1,0 +1,36 @@
+Ace Tracker — production push verification
+
+Local development
+-----------------
+1. Copy backend/.env.example to backend/.env and enter real VAPID keys.
+2. In a terminal:
+
+   cd "D:\Ace Tracker\backend"
+   npm install
+   npm start
+
+3. Open http://localhost:3000 in Chrome and press Ctrl+F5 once.
+4. Open Settings > Manage Notifications, allow browser permission, then press
+   "Send a Test Notification". The test is restricted to the current browser.
+
+Expected local result
+---------------------
+- The backend reports that Ace Tracker is running.
+- The browser receives a test notification.
+- Enabling and saving a task reminder schedules it in the server database.
+- Turning the master switch off removes that device's subscription and reminders.
+
+Production deployment
+---------------------
+- Read DEPLOYMENT.md before publishing.
+- Deploy the Node/Docker application behind HTTPS with a persistent /data volume.
+- Set NODE_ENV=production, COOKIE_SECURE=true, and DATA_DIR=/data.
+- Open the HTTPS domain on every device; each device must independently allow
+  notifications and create its own reminder settings.
+
+Important
+---------
+- Do not use curl to test /api/send-test in production. The endpoint is now
+  protected by an HTTP-only browser session and will correctly reject curl.
+- Keep the VAPID key pair unchanged after users subscribe.
+- Scheduled notifications require the server/container to keep running.

@@ -4,7 +4,7 @@
 <head>
 
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#121212">
+    <meta name="theme-color" content="#121212">
 
     <!-- =========================
          Basic Page Settings
@@ -21,23 +21,70 @@
 
 <body>
 
+    <!-- =========================
+         ACE TRACKER APP NAVIGATION
+    ========================== -->
+    <button id="appMenuBtn" class="app-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
+        ☰
+    </button>
+
+    <div id="appMenuOverlay" class="app-menu-overlay"></div>
+
+    <aside id="appSideMenu" class="app-side-menu" aria-hidden="true">
+        <div class="app-side-menu-header">
+            <div>
+                <span class="app-menu-brand">🚀 Ace Tracker</span>
+                <small>Navigate your progress</small>
+            </div>
+            <button id="closeAppMenuBtn" class="app-menu-close" type="button" aria-label="Close menu">✕</button>
+        </div>
+
+        <nav class="app-nav" aria-label="Ace Tracker navigation">
+            <button class="app-nav-item active" data-page="dashboard" type="button">
+                <span>🏠</span><span>Dashboard</span>
+            </button>
+            <button class="app-nav-item" data-page="progress" type="button">
+                <span>📊</span><span>Progress</span>
+            </button>
+            <button class="app-nav-item" data-page="tasks" type="button">
+                <span>🎯</span><span>Tasks</span>
+            </button>
+            <button class="app-nav-item" data-page="notifications" type="button">
+                <span>🔔</span><span>Notifications</span>
+            </button>
+            <button class="app-nav-item" data-page="settings" type="button">
+                <span>⚙️</span><span>Settings</span>
+            </button>
+        </nav>
+
+        <div class="app-menu-divider"></div>
+
+        <div class="app-menu-quick-actions">
+            <button id="menuCustomizeBtn" type="button">🎯 Customize Tasks</button>
+            <button id="menuThemeBtn" type="button">🌙 Dark Mode</button>
+            <button id="menuResetBtn" type="button">🔄 Reset Progress</button>
+            <button id="menuLogoutBtn" type="button">🚪 Logout</button>
+        </div>
+
+        <div class="app-menu-footer">
+            <span>Version 1.0</span>
+        </div>
+    </aside>
+
     <div id="loginScreen" class="login-screen">
 
         <div class="login-box">
-    
+
             <h1>🚀 Ace Tracker</h1>
-    
-            <input
-                type="text"
-                id="loginName"
-                placeholder="Enter your name">
-    
+
+            <input type="text" id="loginName" placeholder="Enter your name">
+
             <button id="loginBtn">
                 Enter
             </button>
-    
+
         </div>
-    
+
     </div>
 
     <div class="container">
@@ -50,7 +97,7 @@
 
             <h1>Ace Tracker</h1>
 
-          
+
             <p class="version">🚀 Version 1.0</p>
 
             <p>Your Personal Habit & Fitness Dashboard</p>
@@ -59,9 +106,6 @@
 
             <h3 id="liveClock"></h3>
 
-            <div class="theme-switch">
-                <button id="themeToggle">🌙 Dark Mode</button>
-            </div>
 
             <!-- =========================
                  Dashboard Cards
@@ -88,12 +132,11 @@
                 <div class="card">
 
                     <h2 id="welcomeText">👋 Welcome, Amrut</h2>
-                
+
                     <p id="quote">
                         Stay consistent 💪
                     </p>
-                    <h3 id="quote"></h3>
-                
+
                 </div>
 
                 <!-- Progress Ring -->
@@ -109,27 +152,18 @@
 
                                 <linearGradient id="progressGradient">
 
-                                    <stop offset="0%" stop-color="#38bdf8"/>
+                                    <stop offset="0%" stop-color="#38bdf8" />
 
-                                    <stop offset="100%" stop-color="#22c55e"/>
+                                    <stop offset="100%" stop-color="#22c55e" />
 
                                 </linearGradient>
 
                             </defs>
 
-                            <circle
-                                class="progress-bg"
-                                cx="85"
-                                cy="85"
-                                r="70">
+                            <circle class="progress-bg" cx="85" cy="85" r="70">
                             </circle>
 
-                            <circle
-                                class="progress-bar"
-                                id="progressCircle"
-                                cx="85"
-                                cy="85"
-                                r="70">
+                            <circle class="progress-bar" id="progressCircle" cx="85" cy="85" r="70">
                             </circle>
 
                         </svg>
@@ -160,11 +194,11 @@
                 <div class="card">
 
                     <h2>🏆 Best Streak</h2>
-                
+
                     <p id="bestStreak">0 Days</p>
-                
+
                 </div>
-            
+
 
                 <div class="card">
                     <h2>🏆 Golden Days</h2>
@@ -179,9 +213,9 @@
                 <div class="card">
 
                     <h2>⚡ Total XP</h2>
-                
+
                     <p id="totalXP">0 XP</p>
-                
+
                 </div>
 
                 <div class="card">
@@ -210,6 +244,135 @@
 
     </div>
 
+
+    <!-- =========================
+         Weight & BMI Tracker
+    ========================== -->
+
+    <section class="body-progress">
+
+        <h2>⚖️ Weight & BMI Tracker</h2>
+
+        <div class="body-progress-grid">
+
+            <!-- Height -->
+            <div class="body-progress-card">
+
+                <h3>📏 Height</h3>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        id="heightInput"
+                        placeholder="Enter height"
+                        min="1"
+                        step="0.1"
+                    >
+
+                    <span>cm</span>
+
+                </div>
+
+                <button id="saveHeightBtn">
+                    Save Height
+                </button>
+
+            </div>
+
+
+            <!-- Weight -->
+            <div class="body-progress-card">
+
+                <h3>⚖️ Add Weight</h3>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        id="weightInput"
+                        placeholder="Enter weight"
+                        min="1"
+                        step="0.1"
+                    >
+
+                    <span>kg</span>
+
+                </div>
+
+                <button id="addWeightBtn">
+                    ➕ Add Weight
+                </button>
+
+            </div>
+
+
+            <!-- Current Stats -->
+            <div class="body-progress-card">
+
+                <h3>📊 Current Stats</h3>
+
+                <p>
+                    Current Weight:
+                    <strong id="currentWeight">
+                        —
+                    </strong>
+                </p>
+
+                <p>
+                    BMI:
+                    <strong id="currentBMI">
+                        —
+                    </strong>
+                </p>
+
+                <p>
+                    Category:
+                    <strong id="bmiCategory">
+                        —
+                    </strong>
+                </p>
+
+                <p>
+                    Weight Change:
+                    <strong id="weightChange">
+                        —
+                    </strong>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Weight Chart -->
+
+        <div class="weight-chart-card">
+
+            <h3>📈 Weight Progress</h3>
+
+            <canvas id="weightChart"></canvas>
+
+        </div>
+
+
+        <!-- Weight History -->
+
+        <div class="weight-history-card">
+
+            <h3>📋 Weight History</h3>
+
+            <div id="weightHistory">
+
+                <p class="no-weight-data">
+                    No weight entries yet.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
     <!-- =========================
          Daily Tasks
     ========================== -->
@@ -218,61 +381,177 @@
 
         <h2>Today's Tasks</h2>
 
-        <div class="task-list">
+        <div id="taskList" class="task-list">
+            <!-- Tasks will be added here later -->
+        </div>
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>😴 Get Good Sleep</span>
-            </label>
+    </section>
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>💪 Eat 100g+ Protein</span>
-            </label>
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>🏋 Hit the Gym</span>
-            </label>
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>💧 Drink 4 Litres Water</span>
-            </label>
+    <!-- =========================
+     Notifications
+========================== -->
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>⚡ Take Creatine</span>
-            </label>
+<section class="notification-section">
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>💻 Learn Cybersecurity</span>
-            </label>
+    <h2>🔔 Notifications</h2>
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>🚶 Walk 8000 Steps</span>
-            </label>
+    <div class="notification-card">
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>🥗 Stay in Calorie Deficit</span>
-            </label>
+        <div class="notification-icon">
+            🔔
+        </div>
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>🔥 30 Push-ups</span>
-            </label>
+        <div class="notification-info">
 
-            <label class="task">
-                <input type="checkbox" class="taskCheck">
-                <span>⭐ Daily Custom Task</span>
+            <h3>Stay on Track</h3>
+
+            <p id="notificationStatus">
+                Notifications are currently OFF
+            </p>
+
+            <p id="nextReminder">
+                No reminders scheduled
+            </p>
+
+        </div>
+
+        <button id="notificationSettingsBtn" class="notification-settings-btn">
+            ⚙️ Manage Reminders
+        </button>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     Notification Settings Panel
+========================== -->
+
+<div id="notificationPanel" class="notification-panel">
+
+    <div class="notification-panel-content">
+
+        <!-- HEADER -->
+        <div class="notification-panel-header">
+
+            <div>
+                <h2>🔔 Notification Control Center</h2>
+                <p>Control exactly how Ace reminds you.</p>
+            </div>
+
+            <button id="closeNotificationPanel" type="button">
+                ✕
+            </button>
+
+        </div>
+
+
+        <!-- BROWSER PERMISSION -->
+        <div class="notification-permission">
+
+            <h3>🔔 System Notifications</h3>
+
+            <p id="permissionStatus">
+                Notifications are disabled.
+            </p>
+
+            <button id="enableNotificationsBtn" type="button">
+                🔔 Enable Notifications
+            </button>
+
+            <button id="testPushNotificationBtn" class="save-notification-btn" type="button">
+                🧪 Send a Test Notification
+            </button>
+
+        </div>
+
+
+        <!-- MASTER CONTROL -->
+        <div class="notification-master-setting">
+
+            <div>
+                <h3>🔔 Notifications</h3>
+                <p>Master switch for Ace Tracker notifications.</p>
+            </div>
+
+            <label class="notification-switch">
+
+                <input
+                    type="checkbox"
+                    id="masterNotificationEnabled"
+                >
+
+                <span class="notification-slider"></span>
+
             </label>
 
         </div>
 
-    </section>
+
+        <!-- TASK NOTIFICATIONS -->
+        <div class="notification-task-section">
+
+            <div class="notification-section-title">
+
+                <h3>📋 Task Notifications</h3>
+
+                <p>
+                    Customize notifications for every task individually.
+                </p>
+
+            </div>
+
+            <div id="notificationTaskList">
+
+                <!-- Tasks will be generated here by JavaScript -->
+
+            </div>
+
+        </div>
+
+
+        <!-- GOLDEN DAY -->
+        <div class="notification-special-setting">
+
+            <div>
+
+                <h3>🏆 Golden Day</h3>
+
+                <p>
+                    Notify me when every task is completed.
+                </p>
+
+            </div>
+
+            <label class="notification-switch">
+
+                <input
+                    type="checkbox"
+                    id="goldenDayNotificationEnabled"
+                    checked
+                >
+
+                <span class="notification-slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- SAVE -->
+        <button
+            id="saveNotificationSettings"
+            class="save-notification-btn"
+            type="button"
+        >
+            💾 Save Notification Settings
+        </button>
+
+    </div>
+
+</div>
 
     <!-- =========================
          90-Day Calendar
@@ -320,39 +599,121 @@
          Monthly Status
     ========================== -->
 
-    <section class="analytics">
+    <section id="monthlyStatsSection" class="analytics">
 
         <h2>📅 Monthly Statistics</h2>
-        
+
         <div class="dashboard">
-        
-        <div class="card">
-        
-        <h2>📋 Tasks This Month</h2>
-        
-        <p id="monthTasks">0</p>
-        
+
+            <div class="card">
+
+                <h2>📋 Tasks This Month</h2>
+
+                <p id="monthTasks">0</p>
+
+            </div>
+
+            <div class="card">
+
+                <h2>🏆 Golden Days</h2>
+
+                <p id="monthGolden">0</p>
+
+            </div>
+
+            <div class="card">
+
+                <h2>📈 Average Score</h2>
+
+                <p id="monthAverage">0%</p>
+
+            </div>
+
         </div>
-        
-        <div class="card">
-        
-        <h2>🏆 Golden Days</h2>
-        
-        <p id="monthGolden">0</p>
-        
+
+    </section>
+
+
+    <!-- =========================
+         Settings Page
+    ========================== -->
+
+    <section id="appSettingsPage" class="app-settings-page">
+
+        <div class="app-page-header">
+            <div>
+                <p class="app-page-kicker">⚙️ SETTINGS</p>
+                <h2>Ace Tracker Settings</h2>
+                <p>Manage your tracker without scrolling through the whole dashboard.</p>
+            </div>
         </div>
-        
-        <div class="card">
-        
-        <h2>📈 Average Score</h2>
-        
-        <p id="monthAverage">0%</p>
-        
+
+        <div class="settings-grid">
+
+            <div class="settings-card">
+                <div class="settings-card-icon">🎯</div>
+                <div>
+                    <h3>Customize Tasks</h3>
+                    <p>Add, rename, remove and manage the tasks on your dashboard.</p>
+                </div>
+                <button id="settingsCustomizeBtn" type="button">Customize Tasks</button>
+            </div>
+
+            <div class="settings-card">
+                <div class="settings-card-icon">🌗</div>
+                <div>
+                    <h3>Appearance</h3>
+                    <p>Switch between the light and dark themes.</p>
+                </div>
+                <button id="settingsThemeBtn" type="button">🌙 Dark Mode</button>
+            </div>
+
+            <div class="settings-card">
+                <div class="settings-card-icon">🔔</div>
+                <div>
+                    <h3>Notifications</h3>
+                    <p>Manage task reminders and notification permissions.</p>
+                </div>
+                <button id="settingsNotificationsBtn" type="button">Manage Notifications</button>
+            </div>
+
+            <div class="settings-card">
+                <div class="settings-card-icon">📊</div>
+            
+                <div>
+                    <h3>Progress & Data</h3>
+                    <p>
+                        Download your complete Ace Tracker progress,
+                        including your 90-day history, tasks, streaks and weight data.
+                    </p>
+                </div>
+            
+                <button id="settingsExportBtn" type="button">
+                    📥 Download Progress
+                </button>
+            </div>
+
+            <div class="settings-card danger-card">
+                <div class="settings-card-icon">🔄</div>
+                <div>
+                    <h3>Reset Progress</h3>
+                    <p>Reset your tracker progress and start again.</p>
+                </div>
+                <button id="settingsResetBtn" type="button">Reset Progress</button>
+            </div>
+
+            <div class="settings-card">
+                <div class="settings-card-icon">🚪</div>
+                <div>
+                    <h3>Logout</h3>
+                    <p>Sign out of the current Ace Tracker profile.</p>
+                </div>
+                <button id="settingsLogoutBtn" type="button">Logout</button>
+            </div>
+
         </div>
-        
-        </div>
-        
-        </section>
+
+    </section>
 
 
     <!-- =========================
@@ -378,21 +739,56 @@
     <section class="export-section">
 
         <h2>📤 Export Progress</h2>
-    
+
         <button id="exportBtn" class="export-btn">
             Download Progress
         </button>
-    
+
     </section>
 
     <div class="bottom-buttons">
         <button id="resetBtn">🔄 Reset Progress</button>
         <button id="logoutBtn">🚪 Logout</button>
+        <button id="taskCustomizerBtn">⚙️ Customize Tasks</button>
     </div>
 
     <button id="installBtn" style="display:none;">
         📲 Install Ace Tracker
     </button>
+
+    <!-- =========================
+     Task Customizer Panel
+========================== -->
+
+<div id="taskCustomizerPanel" class="task-customizer-panel">
+
+    <div class="task-customizer-content">
+
+        <div class="task-customizer-header">
+            <h2>⚙️ Customize Tasks</h2>
+
+            <button id="closeTaskCustomizer" type="button">
+                ✕
+            </button>
+        </div>
+
+        <p>
+            Customize the tasks that appear on your dashboard.
+        </p>
+
+        <div id="customizerTaskList">
+            <!-- Tasks will be added here later -->
+        </div>
+
+        <button id="addTaskBtn" type="button" class="add-task-btn">
+            ➕ Add New Task
+        </button>
+
+    </div>
+
+</div>
+
+
 
     <!-- =========================
          Footer
@@ -406,8 +802,12 @@
 
     </footer>
 
-    
 
+    <!-- =====================================================
+     ACE SMART NOTIFICATIONS
+===================================================== -->
+
+<div id="notificationContainer"></div>
 
     <!-- =========================
          JavaScript
