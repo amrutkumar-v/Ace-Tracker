@@ -1,5 +1,5 @@
-const CACHE_NAME = "ace-tracker-v10";
-const APP_SHELL = ["/", "/index.html", "/style.css", "/script.js", "/manifest.json", "/icon.png"];
+const CACHE_NAME = "ace-tracker-v11";
+const APP_SHELL = ["/", "/index.html", "/style.css", "/script.js", "/manifest.json", "/icon.png", "/api-config.js"];
 
 self.addEventListener("install", event => {
     event.waitUntil(

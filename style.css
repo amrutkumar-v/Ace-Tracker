@@ -83,30 +83,50 @@ body::after {
 ======================================== */
 
 header {
+    position: relative;
     text-align: center;
     margin-bottom: 40px;
+    padding-top: 8px;
 }
 
-header h1 {
+.header-brand {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+}
+
+.header-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+}
+
+header .header-title {
     font-size: 48px;
     color: #38bdf8;
+    font-weight: 800;
+    letter-spacing: .5px;
+    line-height: 1.1;
 }
 
-header p {
+.header-tagline {
     margin-top: 10px;
     color: #cbd5e1;
     font-size: 20px;
+    font-weight: 500;
+    opacity: .92;
 }
 
-.version {
-    color: #22c55e;
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    margin-top: 8px;
-    text-transform: uppercase;
+.header-clock {
+    margin-top: 24px;
+    line-height: 1.2;
 }
 
+.header-date,
 #currentDate {
     margin-top: 12px;
     color: #94a3b8;
@@ -140,15 +160,20 @@ header p {
 
     box-shadow: 0 12px 35px rgba(0, 0, 0, .35);
 
-    transition: .35s;
-    animation:
-        fadeUp .6s ease,
-        floating 6s ease-in-out infinite;
+    transition:
+        transform .35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow .35s ease,
+        background-color .35s ease;
+    animation: fadeUp .6s ease;
 }
 
 .card:hover {
-    transform: translateY(-12px) scale(1.04);
-    box-shadow: 0 25px 50px rgba(56, 189, 248, .35);
+    transform: translateY(-6px);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .45);
+}
+
+.card:active {
+    transform: translateY(-2px);
 }
 
 .card h2 {
@@ -477,13 +502,35 @@ header p {
 
 footer {
     margin-top: 80px;
-    padding: 30px;
-
+    padding: 34px 20px;
     text-align: center;
-
     color: #94a3b8;
-
     border-top: 1px solid rgba(255, 255, 255, .08);
+    background: rgba(15, 23, 42, .45);
+}
+
+.footer-inner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.footer-logo {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.footer-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: normal;
 }
 
 
@@ -612,19 +659,33 @@ footer {
 ========================= */
 
 #quote {
-
-    margin-top: 20px;
-
+    margin-top: 22px;
     font-size: 18px;
-
     color: #22c55e;
-
     font-style: italic;
-
     font-weight: 500;
+    line-height: 1.55;
+    min-height: 56px;
+    max-width: 24em;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity .32s ease,
+        transform .32s ease,
+        filter .32s ease;
+}
 
-    min-height: 45px;
+#quote.quote-swapping {
+    opacity: 0;
+    transform: translateY(5px);
+    filter: blur(1px);
+}
 
+/* Light theme quote */
+body.light #quote {
+    color: #059669;
 }
 
 /* =========================
@@ -632,17 +693,11 @@ footer {
 ========================= */
 
 #liveClock {
-
-    margin-top: 10px;
-
-    font-size: 22px;
-
+    margin-top: 24px;
+    font-size: 30px;
     color: #38bdf8;
-
     font-weight: bold;
-
     letter-spacing: 2px;
-
 }
 
 /* =========================
@@ -654,8 +709,9 @@ footer {
 }
 
 .task.completed {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    box-shadow: 0 0 20px rgba(34, 197, 94, .45);
+    background: linear-gradient(135deg, rgba(34, 197, 94, .85), rgba(22, 163, 74, .78));
+    border-color: rgba(34, 197, 94, .55);
+    box-shadow: 0 10px 28px rgba(34, 197, 94, .28);
 }
 
 .task.completed span {
@@ -712,203 +768,508 @@ footer {
 }
 
 /* =========================
-   Light Theme
+   Light Theme — Professional Redesign
 ========================= */
 
 body.light {
-
-    background: #f8fafc;
-
+    background:
+        radial-gradient(circle at top left, #e0f2fe, #f8fafc 45%),
+        radial-gradient(circle at bottom right, #ccfbf1, #f1f5f9);
     color: #0f172a;
-
 }
 
+body.light::before {
+    background: #7dd3fc;
+    opacity: .22;
+}
+
+body.light::after {
+    background: #5eead4;
+    opacity: .18;
+}
+
+/* Header / brand */
+body.light header .header-title {
+    color: #0284c7;
+    text-shadow: none;
+}
+
+body.light .header-tagline {
+    color: #475569;
+}
+
+body.light #liveClock {
+    color: #0284c7;
+    text-shadow: none;
+}
+
+body.light .header-logo {
+    box-shadow: 0 8px 24px rgba(2, 132, 199, .22);
+}
+
+/* Cards & surfaces */
 body.light .card,
 body.light .task,
 body.light .chart-card,
-body.light .badge {
-
-    background: white;
-
+body.light .badge,
+body.light .body-progress-card,
+body.light .weight-chart-card,
+body.light .weight-history-card,
+body.light .notification-card {
+    background: #ffffff;
     color: #0f172a;
-
     border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, .08);
+    backdrop-filter: none;
+}
 
+body.light .card {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+
+body.light .card h2,
+body.light .chart-card h3,
+body.light .weight-chart-card h3,
+body.light .weight-history-card h3,
+body.light .body-progress-card h3,
+body.light .notification-info h3 {
+    color: #0f172a;
+}
+
+body.light .card p,
+body.light .chart-card p {
+    color: #0f172a;
+}
+
+body.light .task {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
 }
 
 body.light .task:hover {
-
     background: #f1f5f9;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, .10);
+}
 
+body.light .task.completed {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border: 1px solid #86efac;
+    color: #14532d;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, .18);
 }
 
 body.light .day {
-
-    background: #cbd5e1;
-
+    background: #e2e8f0;
+    color: #0f172a;
 }
 
+body.light .green { background: #22c55e; color: #fff; }
+body.light .yellow { background: #eab308; color: #fff; }
+body.light .red { background: #ef4444; color: #fff; }
+
+/* Progress ring */
+body.light .progress-bg {
+    stroke: #e2e8f0;
+}
+
+body.light .progress-bar {
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, .4));
+}
+
+body.light .progress-number {
+    filter: none;
+    color: #0f172a;
+}
+
+/* XP bar */
+body.light .xp-bar {
+    background: #e2e8f0;
+}
+
+body.light .xp-fill {
+    background: linear-gradient(90deg, #22c55e, #38bdf8);
+}
+
+/* Body progress */
+body.light .input-group input {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+
+body.light .input-group input:focus {
+    box-shadow: 0 0 0 2px #38bdf8;
+    border-color: #38bdf8;
+}
+
+body.light .body-progress-card p {
+    color: #475569;
+}
+
+body.light .body-progress-card strong {
+    color: #0f172a;
+}
+
+body.light .weight-history-row {
+    background: #f1f5f9;
+}
+
+body.light .weight-history-date {
+    color: #475569;
+}
+
+body.light .no-weight-data {
+    color: #64748b;
+}
+
+/* Text colors */
 body.light header p,
 body.light #currentDate,
+body.light .header-tagline,
+body.light .header-date,
 body.light footer {
-
     color: #475569;
+}
 
+body.light #quote {
+    color: #059669;
 }
 
 body.light #themeToggle {
-
     background: #0f172a;
+    color: #fff;
+}
 
+/* Notification panel */
+body.light .notification-panel-content,
+body.light .task-customizer-content,
+body.light .task-notification-editor-content {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .18);
+}
+
+body.light .notification-panel-header h2,
+body.light .task-notification-editor-header h2 {
+    color: #0f172a;
+}
+
+body.light #closeNotificationPanel,
+body.light #closeTaskCustomizer,
+body.light .close-task-notification-editor {
+    color: #0f172a;
+}
+
+body.light .notification-permission,
+body.light .reminder-settings {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+body.light .notification-permission p,
+body.light .reminder-settings label,
+body.light .notification-permission h3,
+body.light .reminder-settings h3 {
+    color: #475569;
+}
+
+body.light #notificationPanel .notification-master-setting,
+body.light #notificationPanel .notification-special-setting,
+body.light .notification-task-card {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+body.light .notification-task-header h4,
+body.light .notification-section-title h3 {
+    color: #0f172a;
+}
+
+body.light .notification-task-description,
+body.light .notification-section-title p,
+body.light .notification-empty {
+    color: #64748b;
+}
+
+body.light .notification-empty {
+    background: #f8fafc;
+}
+
+body.light .configure-task-notification {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+body.light .task-notification-toggle {
+    background: #cbd5e1;
+}
+
+/* Notification panel editors */
+body.light .notification-editor-field input,
+body.light .notification-editor-field select,
+body.light .notification-editor-field textarea {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+
+body.light .customizer-task-row {
+    background: rgba(15, 23, 42, .04);
+    border-color: rgba(15, 23, 42, .08);
+    color: #0f172a;
+}
+
+body.light .customizer-task-name {
+    color: #0f172a;
+}
+
+/* Golden day popup */
+body.light .popup-content {
+    background: #ffffff;
+    color: #0f172a;
+}
+
+/* Footer */
+body.light footer {
+    background: #f1f5f9;
+    border-top-color: #e2e8f0;
 }
 
 /* ==========================================
    MOBILE RESPONSIVE DESIGN
 ========================================== */
 
+/* Tablets & small laptops */
 @media (max-width:1024px) {
 
     .dashboard {
-
         justify-content: center;
-
     }
 
     .card {
-
         width: 100%;
-
         max-width: 420px;
-
     }
 
 }
 
+
+/* Tablets & large phones */
 @media (max-width:768px) {
 
     .container {
-
         width: 95%;
-
-        padding: 20px;
-
+        padding: 20px 16px;
     }
 
-    header h1 {
+    header {
+        padding-top: 6px;
+    }
 
+    header .header-title {
         font-size: 36px;
-
+        padding: 0 48px;
     }
 
+    .header-tagline,
     header p {
-
         font-size: 17px;
+    }
 
+    .header-logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+    }
+
+    .header-brand {
+        top: 6px;
+        right: 6px;
+    }
+
+    #liveClock {
+        font-size: 26px;
+        margin-top: 20px;
     }
 
     .dashboard {
-
         gap: 15px;
-
     }
 
     .card {
-
         width: 100%;
-
         padding: 22px;
-
     }
 
     .task-list {
-
         grid-template-columns: 1fr;
-
     }
 
     .calendar-grid {
-
         grid-template-columns: repeat(5, 1fr);
-
     }
 
     .charts {
-
         grid-template-columns: 1fr;
-
     }
 
     .achievement-grid {
-
         grid-template-columns: 1fr;
+    }
 
+    /* Side menu */
+    .app-settings-page {
+        width: min(100% - 22px, 1050px);
     }
 
 }
 
+
+/* Small phones */
 @media (max-width:480px) {
 
-    header h1 {
-
+    header .header-title {
         font-size: 30px;
+        padding: 0 42px;
+    }
 
+    .header-tagline,
+    header p {
+        font-size: 15px;
+    }
+
+    #liveClock {
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    .header-date,
+    #currentDate {
+        font-size: 15px;
+    }
+
+    .header-logo {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+    }
+
+    .header-brand {
+        top: 4px;
+        right: 4px;
     }
 
     .tasks h2,
     .analytics h2,
     .calendar-section h2,
     .achievement-section h2 {
-
         font-size: 26px;
-
     }
 
     .card h2 {
-
         font-size: 20px;
-
     }
 
     .card p {
-
         font-size: 24px;
-
     }
 
     .progress-ring {
-
         width: 145px;
-
         height: 145px;
-
     }
 
     .progress-ring svg {
-
         width: 145px;
-
         height: 145px;
-
     }
 
     .progress-number {
-
         font-size: 28px;
-
     }
 
     .task {
-
         font-size: 16px;
-
         padding: 16px;
-
     }
 
     .calendar-grid {
-
         grid-template-columns: repeat(3, 1fr);
+    }
 
+}
+
+/* ==========================================
+   MOTION & PERFORMANCE OPTIMIZATION
+========================================== */
+
+/* Disable the decorative floating animation on all cards for
+   smaller screens to reduce jitter and layout repaints. */
+@media (max-width:768px) {
+
+    .card {
+        animation:
+            fadeUp .6s ease;
+    }
+
+    /* Optimize expensive visual effects on mobile */
+
+    /* Reduce the large blurred background glows */
+    body::before,
+    body::after {
+        filter: blur(90px);
+        opacity: .12;
+        width: 220px;
+        height: 220px;
+    }
+
+    /* Replace backdrop-filter with solid surfaces for cheaper
+       repaints on mobile, preserving the visual look. */
+    .card,
+    .chart-card,
+    .body-progress-card,
+    .weight-chart-card,
+    .weight-history-card,
+    .notification-card {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .app-menu-btn {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    /* Soften shadows so they render faster on weak GPUs */
+    .card,
+    .chart-card,
+    .body-progress-card,
+    .notification-card {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .30);
+    }
+
+    .task-notification-toggle,
+    .configure-task-notification {
+        transition-duration: .1s;
+    }
+
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
     }
 
 }
@@ -986,18 +1347,36 @@ body.light #themeToggle {
 
     border-radius: 20px;
 
-    width: 340px;
+    width: min(340px, calc(100% - 40px));
 
     text-align: center;
 
+    border: 1px solid rgba(255, 255, 255, .08);
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
+
+}
+
+.login-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.login-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
 }
 
 .login-box h1 {
-
-    margin-bottom: 25px;
-
+    margin: 0;
     color: #38bdf8;
-
+    font-size: 24px;
 }
 
 .login-box input {
@@ -1006,7 +1385,7 @@ body.light #themeToggle {
 
     padding: 14px;
 
-    border: none;
+    border: 1px solid rgba(255, 255, 255, .1);
 
     border-radius: 10px;
 
@@ -1014,6 +1393,48 @@ body.light #themeToggle {
 
     font-size: 16px;
 
+    background: #0f172a;
+
+    color: white;
+
+    outline: none;
+
+    transition: border-color .2s ease, box-shadow .2s ease;
+
+}
+
+.login-box input:focus {
+
+    border-color: #38bdf8;
+
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, .35);
+
+}
+
+/* Login screen — light theme */
+body.light .login-screen {
+    background: #f1f5f9;
+}
+
+body.light .login-box {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .15);
+}
+
+body.light .login-box h1 {
+    color: #0284c7;
+}
+
+body.light .login-box input {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #e2e8f0;
+}
+
+body.light .login-box input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, .3);
 }
 
 .login-box button,
@@ -1060,143 +1481,6 @@ body.light #themeToggle {
 
 #logoutBtn:hover {
     background: #dc2626;
-}
-
-/* =====================================
-   ACE TRACKER v1.0
-   RESPONSIVE DESIGN
-   ===================================== */
-
-
-/* Tablets and small laptops */
-@media (max-width: 1024px) {
-
-    .dashboard,
-    .cards-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-
-    .card {
-        padding: 18px;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    .tasks-container {
-        padding: 15px;
-    }
-
-}
-
-
-/* Mobile devices */
-@media (max-width: 768px) {
-
-    body {
-        padding: 15px;
-    }
-
-
-    /* Header */
-    header {
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 1.7rem;
-    }
-
-    h2 {
-        font-size: 1.3rem;
-    }
-
-
-    /* Dashboard cards */
-    .dashboard,
-    .cards-container {
-        grid-template-columns: 1fr;
-        width: 100%;
-    }
-
-
-    .card {
-        width: 100%;
-        padding: 16px;
-        border-radius: 18px;
-    }
-
-
-    /* Progress section */
-    .progress-container {
-        width: 100%;
-    }
-
-
-    /* Tasks */
-    .task {
-        padding: 14px;
-        font-size: 15px;
-    }
-
-
-    .task input[type="checkbox"] {
-        transform: scale(1.2);
-    }
-
-
-    /* Buttons */
-    button {
-        width: 100%;
-        padding: 14px;
-        font-size: 16px;
-        border-radius: 12px;
-    }
-
-
-    /* Logout and reset */
-    .logout-btn,
-    .reset-btn {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-
-    /* Footer */
-    footer {
-        text-align: center;
-        margin-top: 25px;
-        font-size: 14px;
-    }
-
-}
-
-
-
-/* Very small phones */
-@media (max-width: 420px) {
-
-    body {
-        padding: 10px;
-    }
-
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-
-    .card {
-        padding: 14px;
-    }
-
-
-    .task {
-        font-size: 14px;
-    }
-
 }
 
 /* =====================================================
@@ -2647,15 +2931,25 @@ body.light #notificationPanel .notification-slider {
     border-radius: 14px;
     background: rgba(18,18,18,.88);
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 2px 0;
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 30px rgba(0,0,0,.22);
-    transition: transform .2s ease, background .2s ease;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
 }
 
 .app-menu-btn:hover {
     transform: translateY(-1px) scale(1.03);
+}
+
+.app-menu-btn:active {
+    transform: translateY(1px) scale(.97);
 }
 
 .app-menu-overlay {
@@ -2703,17 +2997,45 @@ body.menu-open .app-menu-overlay {
     padding: 4px 4px 22px;
 }
 
+.app-menu-brand-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.app-menu-brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+}
+
+.app-menu-brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
 .app-menu-brand {
     display: block;
-    font-size: 21px;
+    font-size: 20px;
     font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: .2px;
+    white-space: nowrap;
 }
 
 .app-side-menu-header small {
     display: block;
-    margin-top: 4px;
-    opacity: .60;
+    margin-top: 2px;
+    opacity: .58;
     font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .app-menu-close {
@@ -2729,22 +3051,23 @@ body.menu-open .app-menu-overlay {
 
 .app-nav {
     display: grid;
-    gap: 7px;
+    gap: 6px;
 }
 
 .app-nav-item {
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 13px;
-    padding: 13px 14px;
+    gap: 12px;
+    padding: 12px 14px;
     border: 1px solid transparent;
     border-radius: 13px;
     background: transparent;
     color: inherit;
     text-align: left;
     font-size: 15px;
-    font-weight: 650;
+    font-weight: 600;
+    line-height: 1.3;
     cursor: pointer;
     transition: background .18s ease, border-color .18s ease, transform .18s ease;
 }
@@ -2760,25 +3083,29 @@ body.menu-open .app-menu-overlay {
 }
 
 .app-nav-item span:first-child {
-    width: 25px;
-    text-align: center;
-    font-size: 19px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
 }
 
 .app-menu-divider {
     height: 1px;
-    margin: 20px 4px 14px;
+    margin: 16px 4px 14px;
     background: rgba(255,255,255,.10);
 }
 
 .app-menu-quick-actions {
     display: grid;
-    gap: 7px;
+    gap: 6px;
 }
 
 .app-menu-quick-actions button {
     width: 100%;
-    padding: 11px 13px;
+    padding: 11px 14px;
     border: 1px solid rgba(255,255,255,.08);
     border-radius: 11px;
     background: rgba(255,255,255,.045);
@@ -2786,6 +3113,8 @@ body.menu-open .app-menu-overlay {
     text-align: left;
     cursor: pointer;
     font-size: 14px;
+    line-height: 1.3;
+    transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
 }
 
 .app-menu-quick-actions button:hover {
@@ -2794,9 +3123,10 @@ body.menu-open .app-menu-overlay {
 
 .app-menu-footer {
     margin-top: auto;
-    padding: 20px 4px 2px;
+    padding: 18px 4px 2px;
     opacity: .45;
     font-size: 11px;
+    letter-spacing: .2px;
 }
 
 /* Give the page room for the fixed menu button. */
@@ -3080,4 +3410,662 @@ body.light .settings-card-icon,
 body.light .settings-card button {
     background: rgba(0,0,0,.045);
     border-color: rgba(0,0,0,.08);
+}
+
+/* =====================================================
+   PREMIUM INTERACTIONS & SMOOTHNESS
+   Consistent easing + subtle transform/opacity feedback.
+   Layout properties (width/height/top/left/margin) are
+   intentionally not animated for performance.
+===================================================== */
+
+/* Consistent easing token for hover/focus states */
+:root {
+    --ace-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Buttons: subtle, responsive press feedback ---------- */
+.export-btn,
+.body-progress-card button,
+.add-task-btn,
+.edit-task-btn,
+.delete-task-btn,
+.a-ce-btn {
+    transition:
+        transform .18s var(--ace-ease),
+        box-shadow .25s ease,
+        background-color .25s ease,
+        filter .25s ease;
+}
+
+.notification-settings-btn,
+.save-notification-btn,
+.settings-card button,
+.app-menu-quick-actions button {
+    transition:
+        background-color .2s ease,
+        border-color .2s ease,
+        transform .15s var(--ace-ease),
+        box-shadow .25s ease;
+}
+
+/* Small, immediate press feedback */
+.notification-settings-btn:active,
+.save-notification-btn:active,
+.settings-card button:active,
+.app-menu-quick-actions button:active,
+.export-btn:active,
+.body-progress-card button:active,
+.add-task-btn:active,
+.edit-task-btn:active,
+.delete-task-btn:active {
+    transform: translateY(1px) scale(.99);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+}
+
+/* Keep existing hover but smooth the easing */
+.export-btn:hover,
+.body-progress-card button:hover,
+.add-task-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ---------- Navigation & menu ---------- */
+.app-nav-item,
+.app-menu-quick-actions button {
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        transform .18s var(--ace-ease);
+}
+
+.app-nav-item:active,
+.app-menu-quick-actions button:active {
+    transform: scale(.97);
+}
+
+/* ---------- Panels: smooth open/close ---------- */
+.notification-panel,
+.task-customizer-panel,
+.task-notification-editor {
+    transition: opacity .25s ease;
+}
+
+@keyframes panelIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.notification-panel-content,
+.task-customizer-content,
+.task-notification-editor-content {
+    animation: panelIn .32s var(--ace-ease);
+}
+
+/* When reduced motion is requested, drop panel entrance animation */
+@media (prefers-reduced-motion: reduce) {
+    .notification-panel-content,
+    .task-customizer-content,
+    .task-notification-editor-content {
+        animation: none;
+    }
+}
+
+/* ---------- Tasks: smooth completion transition ---------- */
+.task {
+    transition:
+        background-color .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease,
+        transform .3s var(--ace-ease);
+}
+
+.task input[type="checkbox"] {
+    transition: transform .2s var(--ace-ease);
+}
+
+.task.completed input[type="checkbox"] {
+    transform: scale(1.12);
+}
+
+/* ---------- Theme switching: smooth, non-flashing ----------
+   Cards/surfaces already transition via their own all-property
+   transitions. We only smooth the body and header/footer text
+   so color changes feel soft without over-animating. */
+body {
+    transition:
+        background-color .3s ease,
+        color .3s ease;
+}
+
+header .header-title,
+.header-tagline,
+#liveClock,
+#currentDate,
+footer {
+    transition:
+        color .3s ease,
+        background-color .3s ease;
+}
+
+/* XP bar fills smoothly when values update */
+.xp-fill {
+    transition: width .6s var(--ace-ease);
+}
+
+/* Progress ring already transitions via stroke-dashoffset — keep smooth */
+.progress-bar {
+    transition: stroke-dashoffset .8s var(--ace-ease);
+}
+
+/* =====================================================
+   VINTAGE LIGHT THEME — WARM PREMIUM REDESIGN
+   Warm ivory / parchment / cream surfaces, dark espresso
+   typography, muted bronze borders, antique-gold accents.
+   Overrides all earlier body.light rules (cascade last).
+===================================================== */
+body.light {
+    background:
+        radial-gradient(circle at 14% -12%, #f6e9c8, transparent 46%),
+        radial-gradient(circle at 112% 112%, #eedeba, transparent 42%),
+        linear-gradient(180deg, #f7f0de, #f1e8d2);
+    color: #3a2f25;
+}
+
+body.light::before {
+    background: #eccf86;
+    opacity: .16;
+}
+
+body.light::after {
+    background: #dcc088;
+    opacity: .14;
+}
+
+/* ---------- Header & brand ---------- */
+body.light header .header-title,
+body.light .login-box h1 {
+    color: #5a4428;
+    text-shadow: none;
+}
+
+body.light .header-tagline,
+body.light .header-date,
+body.light #currentDate,
+body.light header p {
+    color: #7a6a55;
+}
+
+body.light #liveClock {
+    color: #9c7428;
+    text-shadow: none;
+}
+
+body.light .header-logo,
+body.light .login-logo,
+body.light .app-menu-brand-logo,
+body.light .footer-logo {
+    box-shadow: 0 4px 16px rgba(90, 68, 40, .22);
+}
+
+body.light #quote {
+    color: #54703f;
+    letter-spacing: .1px;
+}
+
+body.light .login-screen {
+    background: #efe3c8;
+}
+
+body.light .login-box {
+    background: #fbf4e4;
+    border-color: #dcc89e;
+    box-shadow: 0 24px 60px rgba(90, 68, 40, .22);
+}
+
+body.light .login-box input {
+    background: #f7eeda;
+    color: #3a2f25;
+    border-color: #dcc89e;
+}
+
+body.light .login-box input::placeholder {
+    color: #9b8a6d;
+}
+
+body.light .login-box input:focus {
+    border-color: #b98a2f;
+    box-shadow: 0 0 0 2px rgba(185, 138, 47, .30);
+}
+
+/* ---------- Cards & surfaces (aged card-stock) ---------- */
+body.light .card,
+body.light .task,
+body.light .chart-card,
+body.light .badge,
+body.light .body-progress-card,
+body.light .weight-chart-card,
+body.light .weight-history-card,
+body.light .notification-card {
+    background: #fbf3e1;
+    color: #3a2f25;
+    border: 1px solid #dfc996;
+    box-shadow: 0 10px 28px rgba(96, 66, 32, .11);
+    backdrop-filter: none;
+}
+
+body.light .card {
+    background:
+        linear-gradient(180deg, #fff9ec, #faf0d2);
+    border-top: 1px solid #e9d7a8;
+}
+
+/* Antique-gold heading accents + thin bronze divider */
+body.light .card h2,
+body.light .chart-card h3,
+body.light .weight-chart-card h3,
+body.light .weight-history-card h3,
+body.light .body-progress-card h3,
+body.light .notification-info h3 {
+    color: #7a5b26;
+    letter-spacing: .2px;
+}
+
+body.light .card p,
+body.light .chart-card p {
+    color: #3a2f25;
+}
+
+/* ---------- Progress ring & XP ---------- */
+body.light .progress-bg {
+    stroke: #e6d3a4;
+}
+
+body.light .progress-bar {
+    stroke: #b0882f;
+    filter: drop-shadow(0 0 6px rgba(176, 136, 47, .35));
+}
+
+body.light .progress-number {
+    filter: none;
+    color: #5a4428;
+}
+
+body.light .xp-bar {
+    background: #ecdcb4;
+    box-shadow: inset 0 1px 2px rgba(90, 68, 40, .12);
+}
+
+body.light .xp-fill {
+    background: linear-gradient(90deg, #8a6d2f, #c49a3d);
+}
+
+/* ---------- Tasks ---------- */
+body.light .task {
+    background: #fbf3e1;
+    border-color: #dfc996;
+}
+
+body.light .task:hover {
+    background: #f7ecd0;
+    border-color: #cfb47e;
+    box-shadow: 0 12px 26px rgba(90, 68, 40, .15);
+}
+
+body.light .task.completed {
+    background: linear-gradient(135deg, #e9efd8, #d8e6c4);
+    border-color: #a6bd8b;
+    color: #3f552f;
+    box-shadow: 0 8px 22px rgba(90, 120, 70, .20);
+}
+
+body.light .task.completed span,
+body.light .task.completed label {
+    color: #3f552f;
+}
+
+/* ---------- Calendar ---------- */
+body.light .day {
+    background: #e9d9b4;
+    color: #5a4428;
+}
+
+body.light .green {
+    background: #6b8f5e;
+    color: #fff;
+}
+
+body.light .yellow {
+    background: #c99a3b;
+    color: #fff;
+}
+
+body.light .red {
+    background: #a8553f;
+    color: #fff;
+}
+
+/* ---------- Body progress / weight ---------- */
+body.light .input-group input {
+    background: #f7eeda;
+    color: #3a2f25;
+    border: 1px solid #dcc89e;
+}
+
+body.light .input-group input::placeholder {
+    color: #9b8a6d;
+}
+
+body.light .input-group input:focus {
+    border-color: #b98a2f;
+    box-shadow: 0 0 0 2px rgba(185, 138, 47, .30);
+}
+
+body.light .body-progress-card p,
+body.light .notification-info p {
+    color: #7a6a55;
+}
+
+body.light .body-progress-card strong {
+    color: #3a2f25;
+}
+
+body.light .weight-history-row {
+    background: #f5eccf;
+}
+
+body.light .weight-history-date {
+    color: #7a6a55;
+}
+
+body.light .no-weight-data {
+    color: #9b8a6d;
+}
+
+/* ---------- Buttons (antique bronze / muted gold) ---------- */
+body.light .export-btn,
+body.light .add-task-btn,
+body.light .save-notification-btn,
+body.light .body-progress-card button,
+body.light .login-box button {
+    background: linear-gradient(180deg, #cfad5c, #b58a34);
+    color: #3a2f25;
+    border: 1px solid rgba(122, 91, 38, .25);
+    text-shadow: none;
+    box-shadow: 0 6px 16px rgba(150, 110, 42, .30);
+}
+
+body.light .export-btn:hover,
+body.light .add-task-btn:hover,
+body.light .body-progress-card button:hover,
+body.light .login-box button:hover {
+    background: linear-gradient(180deg, #d9ba6d, #c0943c);
+    box-shadow: 0 10px 22px rgba(150, 110, 42, .38);
+    transform: translateY(-2px);
+}
+
+body.light .save-notification-btn {
+    background: #6b8a58;
+    border-color: rgba(80, 110, 60, .3);
+    color: #fff;
+}
+
+body.light .save-notification-btn:hover {
+    background: #738f61;
+    transform: translateY(-1px);
+}
+
+/* Secondary / neutral buttons (bronze tint) */
+body.light .edit-task-btn,
+body.light .notification-settings-btn {
+    background: linear-gradient(180deg, #caa24e, #b08a33);
+    color: #3a2f25;
+    border: 1px solid rgba(122, 91, 38, .22);
+}
+
+body.light .edit-task-btn:hover,
+body.light .notification-settings-btn:hover {
+    background: linear-gradient(180deg, #d6b25e, #bd9140);
+    transform: translateY(-1px);
+}
+
+body.light .delete-task-btn,
+body.light #logoutBtn {
+    background: #a8553f;
+    color: #fff;
+}
+
+body.light .popup-content button {
+    background: #6b8a58;
+    color: #fff;
+}
+
+/* Generic neutral buttons in panels/sidebar picks up warm tones below */
+body.light .settings-card button {
+    background: rgba(90, 68, 40, .06);
+    color: #3a2f25;
+    border-color: rgba(90, 68, 40, .16);
+}
+
+body.light .settings-card button:hover {
+    background: rgba(185, 138, 47, .14);
+}
+
+/* ---------- Notification UI ---------- */
+body.light .notification-panel-content,
+body.light .task-customizer-content,
+body.light .task-notification-editor-content,
+body.light .popup-content {
+    background: #fbf3e1;
+    color: #3a2f25;
+    border: 1px solid #d8c290;
+    box-shadow: 0 24px 60px rgba(96, 66, 32, .20);
+}
+
+body.light .notification-panel-header h2,
+body.light .task-customizer-header h2,
+body.light .task-notification-editor-header h2 {
+    color: #7a5b26;
+    letter-spacing: .2px;
+}
+
+body.light #closeNotificationPanel,
+body.light #closeTaskCustomizer,
+body.light .close-task-notification-editor {
+    color: #5a4428;
+}
+
+body.light .notification-permission,
+body.light .reminder-settings {
+    background: #f4ead2;
+    border: 1px solid #dcc99a;
+}
+
+body.light .notification-permission p,
+body.light .reminder-settings label,
+body.light .notification-permission h3,
+body.light .reminder-settings h3 {
+    color: #7a6a55;
+}
+
+body.light #notificationPanel .notification-master-setting,
+body.light #notificationPanel .notification-special-setting,
+body.light #notificationPanel .notification-task-section,
+body.light .notification-task-card {
+    background: #f4ead2;
+    border-color: #dcc99a;
+}
+
+body.light .notification-task-header h4,
+body.light .notification-section-title h3 {
+    color: #5a4428;
+}
+
+body.light .notification-task-description,
+body.light .notification-section-title p,
+body.light .notification-empty {
+    color: #7a6a55;
+}
+
+body.light .notification-empty {
+    background: #f4ead2;
+}
+
+body.light .configure-task-notification {
+    background: #dcc99a;
+    color: #5a4428;
+}
+
+body.light .task-notification-toggle {
+    background: #d5bf93;
+}
+
+body.light #notificationPanel .notification-slider {
+    background: #d5bf93;
+}
+
+body.light #notificationPanel .notification-switch input:checked + .notification-slider {
+    background: #6b8a58;
+    border-color: #6b8a58;
+}
+
+/* ---------- Modals / editors / customizer ---------- */
+body.light .notification-editor-field input,
+body.light .notification-editor-field select,
+body.light .notification-editor-field textarea,
+body.light .customizer-task-row {
+    background: #f7edda;
+    color: #3a2f25;
+    border-color: #d8c290;
+}
+
+body.light .notification-editor-field input::placeholder,
+body.light .notification-editor-field textarea::placeholder {
+    color: #9b8a6d;
+}
+
+body.light .customizer-task-row {
+    background: rgba(90, 68, 40, .06);
+    border-color: rgba(90, 68, 40, .12);
+    color: #3a2f25;
+}
+
+body.light .customizer-task-name {
+    color: #5a4428;
+}
+
+/* ---------- Sidebar light mode (aged parchment) ---------- */
+body.light .app-menu-btn {
+    background: rgba(251, 243, 225, .96);
+    color: #3a2f25;
+    border-color: rgba(90, 68, 40, .20);
+    box-shadow: 0 8px 26px rgba(90, 68, 40, .20);
+}
+
+body.light .app-side-menu {
+    background: linear-gradient(180deg, #f8efd8, #f1e6cb);
+    border-right-color: rgba(122, 91, 38, .18);
+    box-shadow: 18px 0 50px rgba(90, 68, 40, .18);
+}
+
+body.light .app-side-menu-header small {
+    color: #7a6a55;
+}
+
+body.light .app-menu-close {
+    background: rgba(122, 91, 38, .06);
+    color: #5a4428;
+}
+
+body.light .app-nav-item {
+    color: #554736;
+}
+
+body.light .app-nav-item:hover {
+    background: rgba(185, 138, 47, .15);
+    color: #4a3a22;
+}
+
+body.light .app-nav-item.active {
+    background: rgba(185, 138, 47, .24);
+    border-color: rgba(176, 138, 51, .42);
+    color: #4a3520;
+    box-shadow: inset 2px 0 0 #b0882f;
+}
+
+body.light .app-menu-divider {
+    background: rgba(122, 91, 38, .16);
+}
+
+body.light .app-menu-quick-actions button {
+    background: rgba(122, 91, 38, .05);
+    color: #554736;
+    border-color: rgba(122, 91, 38, .12);
+}
+
+body.light .app-menu-quick-actions button:hover {
+    background: rgba(185, 138, 47, .14);
+    color: #4a3a22;
+}
+
+body.light .app-menu-footer {
+    color: #8a7350;
+}
+
+body.light #themeToggle {
+    background: #4a3a22;
+    color: #f4ecda;
+}
+
+body.light .notification-icon {
+    background: #e9d9b4;
+}
+
+/* ---------- Settings ---------- */
+body.light .settings-card {
+    background: #fbf4e4;
+    border-color: #e3d2ab;
+    color: #3a2f25;
+    box-shadow: 0 10px 30px rgba(90, 68, 40, .08);
+}
+
+body.light .settings-card h3 {
+    color: #5a4428;
+}
+
+body.light .settings-card p,
+body.light .app-page-kicker {
+    color: #7a6a55;
+}
+
+body.light .settings-card-icon {
+    background: rgba(185, 138, 47, .18);
+    color: #5a4428;
+}
+
+body.light .danger-card {
+    border-color: rgba(168, 85, 63, .35);
+}
+
+/* ---------- Footer ---------- */
+body.light footer {
+    background: #efe3c8;
+    border-top-color: #e3d2ab;
+    color: #7a6a55;
+}
+
+body.light .footer-text {
+    color: #7a6a55;
+}
+
+/* ---------- Notifications container (toast) ---------- */
+body.light .ace-notification {
+    background: rgba(90, 68, 40, .97);
+    border-color: rgba(230, 200, 120, .5);
 }

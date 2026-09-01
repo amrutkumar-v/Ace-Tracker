@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const crypto = require("crypto");
 const express = require("express");
+const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const { DatabaseSync } = require("node:sqlite");
@@ -73,6 +74,30 @@ db.exec(`
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
+
+// CORS for the Vercel-hosted frontend, which is a different origin from this
+// backend. Allowed origins come from CORS_ORIGIN (comma-separated). When it is
+// unset (single-node / local development) the origin is allowed implicitly
+// because requests are same-origin and require no CORS preflight.
+const allowedOrigins = (process.env.CORS_ORIGIN || "")
+    .split(",")
+    .map(origin => origin.trim())
+    .filter(Boolean);
+
+if (allowedOrigins.length) {
+    app.use(cors({
+        origin(origin, callback) {
+            // Allow the configured frontend origins. Non-browser requests
+            // (curl, server-to-server) have no Origin header and are allowed.
+            if (!origin || allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+            return callback(new Error("Origin not allowed by CORS."));
+        },
+        credentials: true
+    }));
+}
+
 app.use(express.json({ limit: "20kb" }));
 app.use((req, res, next) => {
     res.setHeader("X-Content-Type-Options", "nosniff");

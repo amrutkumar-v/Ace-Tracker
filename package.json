@@ -4,7 +4,12 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node scripts/gen-api-config.js",
+    "dev": "node scripts/gen-api-config.js && node backend/server.js",
+    "start": "node backend/server.js",
+    "check": "node --check script.js && node --check service-worker.js && node --check backend/server.js && node --check scripts/gen-api-config.js",
+    "test": "npm run check",
+    "install:backend": "npm --prefix backend install"
   },
   "repository": {
     "type": "git",

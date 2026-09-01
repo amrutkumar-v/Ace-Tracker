@@ -15,12 +15,126 @@ const XP_PER_LEVEL = 100;
 const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const MOTIVATIONAL_QUOTES = [
-    "Stay consistent 💪",
-    "Small steps every day 🚀",
-    "Progress beats perfection ⭐",
-    "Discipline creates freedom 🔥",
-    "Today's effort is tomorrow's success 🏆",
-    "Keep going, you're improving 🌟"
+    "Small progress is still progress.",
+    "Discipline builds what motivation starts.",
+    "Your future self will thank you for what you do today.",
+    "Consistency beats intensity.",
+    "One good day becomes a good week. One good week becomes a new habit.",
+    "Don't wait for motivation. Build discipline.",
+    "Show up. Do the work. Repeat.",
+    "Your habits are building your future.",
+    "Every rep is a small vote for the person you want to become.",
+    "The best time to start was yesterday. The next best time is now.",
+    "Focus on the daily win, not the distant finish line.",
+    "A little better every day is still better than everyone who quits.",
+    "Hydrate. Move. Learn. Rest. Repeat.",
+    "You don't need to be great to start, but you need to start to be great.",
+    "Protect your focus like it's your most valuable asset.",
+    "The gym is won in the minutes you choose to show up.",
+    "Burn the average day. Chase the sharp one.",
+    "Growth looks like repetition until it suddenly looks like progress.",
+    "One hour of focus beats four hours of distraction.",
+    "Your streak is just today's decision shown in numbers.",
+    "Eat to perform, not just to feel full.",
+    "The body achieves what the mind believes.",
+    "Rest is part of the work, not an escape from it.",
+    "Every day you don't skip is a day your future self notices.",
+    "Study the lesson again until it becomes instinct.",
+    "Security is a habit long before it is a skill.",
+    "Learn like today's effort is tomorrow's edge.",
+    "Fail fast, fix fast, move forward faster.",
+    "A tiny step today is a stepping stone tomorrow.",
+    "Your only competition is the version of you from yesterday.",
+    "Silence the noise. Do the next right thing.",
+    "Progress hides in the work nobody claps for.",
+    "The grind is quiet because it's busy working.",
+    "Discipline is remembering what you want most.",
+    "Winning streaks begin with one boring, committed day.",
+    "Get up one more time than you fall down.",
+    "Small habits compound into big identity.",
+    "Clean eating and clean code both start with clean habits.",
+    "The screen can wait. Your growth cannot.",
+    "Finish the task, then check the phone.",
+    "Your energy is finite. Spend it on what moves you forward.",
+    "Every drop of sweat points toward a stronger you.",
+    "Write the checklist. Then check the boxes.",
+    "A sound body carries a sharp mind.",
+    "Don't negotiate with the snooze button.",
+    "The morning you win is the day you build.",
+    "Repetition makes the error disappear.",
+    "Be the student who outworks the doubt.",
+    "Short sessions repeated beat long sessions skipped.",
+    "Your plan is only as strong as your first five minutes.",
+    "Momentum is a gift you give your future self.",
+    "The best habit is the one you actually keep.",
+    "Strength is built in days you feel like staying home.",
+    "Standing up again is the whole point.",
+    "Your best effort today is your best forecast tomorrow.",
+    "Do not stop when you're tired. Stop when you're done with the day's goal.",
+    "Consistency is the quiet superpower.",
+    "Track the work. Trust the process. Let the results follow.",
+    "A focused hour is worth a distracted day.",
+    "Fuel your body like it's the only machine you'll ever own.",
+    "The hardest step is often the first one. Take it.",
+    "Keep the streak alive. Future you is counting on it.",
+    "Excellence is a series of ordinary days done well.",
+    "Finish what you start, even on the days it's small.",
+    "Your habits are the architecture of your day.",
+    "Be relentless with your routine, gentle with yourself.",
+    "Growth doesn't shout. It shows up.",
+    "One more set, one more problem, one more page.",
+    "The person you become is built in the boring middle.",
+    "Close the tab. Open the task.",
+    "Deep work is the new competitive advantage.",
+    "Every missed meal plan, rest day, and study block has a comeback.",
+    "Run your own race. Your finish line is yours.",
+    "Discipline is choosing what you want more than what you want now.",
+    "The scoreboard of life rewards the repeat.",
+    "Keep your goals close and your excuses far.",
+    "You are one decision away from a better routine.",
+    "Progress is louder when it's quiet and consistent.",
+    "Small daily wins stack into a strong identity.",
+    "Don't count the days. Make the days count.",
+    "Your future is a series of present moments. Choose wisely.",
+    "Be consistent enough that results become inevitable.",
+    "The habit you keep today powers the version of you next year.",
+    "Fortify your routine against the days you don't feel like it.",
+    "A clean mind starts with a clean sleep schedule.",
+    "Train your mind with problems and your body with reps.",
+    "The most powerful password is a disciplined daily routine.",
+    "Break big goals into boring, doable steps, then do them.",
+    "Your goals deserve a fight, not a wish.",
+    "Practice until it's easy, then practice easily.",
+    "Resilience is a repeatable habit, not a rare gift.",
+    "Guard mornings like they're the blueprint of your day.",
+    "The pen marks the plan; the habit delivers it.",
+    "Every quiet push today is loud evidence tomorrow.",
+    "Stay curious. Stay hungry. Stay consistent.",
+    "The strongest people are the ones who never stop showing up.",
+    "Make your environment make the good choice the easy choice.",
+    "Small actions, repeated, are the most honest form of ambition.",
+    "Your body is the bank account of your daily choices.",
+    "Studying is planting seeds for a smarter you.",
+    "Cybersecurity is a mindset: verify, protect, and stay sharp.",
+    "A little work done daily beats a mountain done rarely.",
+    "The comeback is always stronger than the setback.",
+    "Eat the frog first, and the rest of the day gets lighter.",
+    "Consistency turns ordinary days into extraordinary results.",
+    "Your best version is under construction every single day.",
+    "Discipline is the bridge between goals and accomplishment.",
+    "Protect your habits like you protect your passwords.",
+    "Finish strong, then rest. Don't rest, then quit.",
+    "The right day to build the habit is today, again.",
+    "Progress is a series of small commitments kept.",
+    "Balance the hustle with the recovery.",
+    "Your future self is listening to the choices you make now.",
+    "One focused hour a day becomes a masterpiece in a year.",
+    "Be someone who finishes what they start, quietly.",
+    "The mirror rewards the habit, not the intention.",
+    "Stack good days like bricks and build something real.",
+    "Keep moving. The finish line moves with you.",
+    "Routine is freedom wearing comfortable clothes.",
+    "Earn the night by winning the day."
 ];
 
 // Single source of truth for all localStorage keys
@@ -131,6 +245,14 @@ let goldenDays = 0;
 let completionRate = 0;
 
 let challengeStart = localStorage.getItem(STORAGE_KEYS.challengeStart);
+// Recover from a missing or corrupted stored challenge date. A truthy but
+// invalid value (e.g. "undefined", "NaN", or any non YYYY-MM-DD string) would
+// otherwise produce an Invalid Date and leak NaN into challenge-day math.
+// Treating it as missing lets processDailyLifecycle safely re-initialize it to
+// today without touching XP, streaks, tasks, weight, or other stored progress.
+if (challengeStart && !isValidDateKey(challengeStart)) {
+    challengeStart = null;
+}
 let dayNumber = 1;
 
 let weeklyChart = null;
@@ -165,6 +287,24 @@ function parseDateKey(dateKey) {
 }
 
 /**
+ * Verifies a string is a real calendar date in YYYY-MM-DD form.
+ * Guards against corrupted / invalid stored values that would otherwise
+ * parse to an Invalid Date and produce NaN in date arithmetic.
+ */
+function isValidDateKey(dateKey) {
+    if (typeof dateKey !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return false;
+    const parts = dateKey.split("-").map(Number);
+    if (!parts.every((n) => Number.isInteger(n) && n >= 0)) return false;
+    const date = parseDateKey(dateKey);
+    if (Number.isNaN(date.getTime())) return false;
+    return (
+        date.getUTCFullYear() === parts[0] &&
+        date.getUTCMonth() === parts[1] - 1 &&
+        date.getUTCDate() === parts[2]
+    );
+}
+
+/**
  * Adds a specified number of days to a date string key.
  */
 function addDays(dateKey, numDays) {
@@ -180,19 +320,26 @@ function addDays(dateKey, numDays) {
  * Calculates absolute calendar days between two YYYY-MM-DD strings.
  */
 function daysBetween(dateKeyA, dateKeyB) {
+    // Guard against corrupted inputs so callers never see NaN from Invalid Dates.
+    if (!isValidDateKey(dateKeyA) || !isValidDateKey(dateKeyB)) return 0;
     const msPerDay = 1000 * 60 * 60 * 24;
     return Math.round((parseDateKey(dateKeyB) - parseDateKey(dateKeyA)) / msPerDay);
 }
 
 function getDayNumberForDate(dateKey) {
-    if (!challengeStart) return 1;
+    if (!isValidDateKey(challengeStart)) return 1;
+    if (!isValidDateKey(dateKey)) dateKey = getTodayKey();
     const rawDay = daysBetween(challengeStart, dateKey) + 1;
+    if (!Number.isFinite(rawDay)) return 1;
     return Math.min(CHALLENGE_LENGTH_DAYS, Math.max(1, rawDay));
 }
 
 function isChallengeFinished(dateKey = getTodayKey()) {
-    if (!challengeStart) return false;
-    return daysBetween(challengeStart, dateKey) + 1 > CHALLENGE_LENGTH_DAYS;
+    if (!isValidDateKey(challengeStart)) return false;
+    if (!isValidDateKey(dateKey)) dateKey = getTodayKey();
+    const elapsed = daysBetween(challengeStart, dateKey) + 1;
+    if (!Number.isFinite(elapsed)) return false;
+    return elapsed > CHALLENGE_LENGTH_DAYS;
 }
 
 /**
@@ -613,10 +760,16 @@ function updateStatistics() {
     const today = getTodayKey();
     const finished = isChallengeFinished(today);
 
+    // Guard against any residual non-finite day value reaching the UI.
+    const safeDayNumber = Number.isFinite(dayNumber)
+        ? Math.min(CHALLENGE_LENGTH_DAYS, Math.max(1, Math.trunc(dayNumber)))
+        : getDayNumberForDate(today);
+    const safeRemaining = Math.max(CHALLENGE_LENGTH_DAYS - safeDayNumber, 0);
+
     if (goldenDaysText) goldenDaysText.textContent = goldenDays;
     if (completionRateText) completionRateText.textContent = `${completionRate}%`;
     if (daysRemainingText) {
-        daysRemainingText.textContent = finished ? 0 : Math.max(CHALLENGE_LENGTH_DAYS - dayNumber, 0);
+        daysRemainingText.textContent = finished ? 0 : safeRemaining;
     }
     if (totalTasksText) totalTasksText.textContent = `${totalTasksCompleted} / ${maxTotalTasks}`;
 
@@ -628,7 +781,7 @@ function updateStatistics() {
         if (finished) {
             challengeDayText.textContent = "Challenge Completed! 🏆";
         } else {
-            challengeDayText.textContent = `Day ${dayNumber} / ${CHALLENGE_LENGTH_DAYS}`;
+            challengeDayText.textContent = `Day ${safeDayNumber} / ${CHALLENGE_LENGTH_DAYS}`;
         }
     }
 }
@@ -786,7 +939,7 @@ function createPieChart() {
             labels: ["Completed", "Remaining"],
             datasets: [{
                 data: [completed, checkboxes.length - completed],
-                backgroundColor: ["#22c55e", "#334155"],
+                backgroundColor: [isLightMode() ? "#6b8f5e" : "#22c55e", isLightMode() ? "#e3d2ab" : "#334155"],
                 borderWidth: 0
             }]
         },
@@ -796,7 +949,7 @@ function createPieChart() {
             plugins: {
                 legend: {
                     position: "bottom",
-                    labels: { color: "white" }
+                    labels: { color: isLightMode() ? "#3a2f25" : "white" }
                 }
             }
         }
@@ -842,6 +995,46 @@ function initializeTheme() {
     const menuThemeBtn = document.getElementById("menuThemeBtn");
     const settingsThemeBtn = document.getElementById("settingsThemeBtn");
 
+    function applyThemeColors() {
+        const light = document.body.classList.contains("light");
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", light ? "#f4ecda" : "#121212");
+
+        [weeklyChart, pieChart, weightChart].forEach(ch => {
+            if (!ch) return;
+            const tickColor = light ? "#7a6a55" : "#cbd5e1";
+            const gridColor = light ? "rgba(90,68,40,.12)" : "rgba(255,255,255,.10)";
+            const textColor = light ? "#3a2f25" : "white";
+            if (ch.options.scales) {
+                Object.values(ch.options.scales).forEach(scale => {
+                    if (scale.ticks) scale.ticks.color = tickColor;
+                    if (scale.grid) scale.grid.color = gridColor;
+                });
+            }
+            if (ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels) {
+                ch.options.plugins.legend.labels.color = textColor;
+            }
+            if (ch.data && ch.data.datasets && ch.data.datasets[0] && ch.data.datasets[0].backgroundColor
+                && Array.isArray(ch.data.datasets[0].backgroundColor)
+                && ch.data.datasets[0].backgroundColor.length === 2) {
+                ch.data.datasets[0].backgroundColor[0] = light ? "#6b8f5e" : "#22c55e";
+                ch.data.datasets[0].backgroundColor[1] = light ? "#e3d2ab" : "#334155";
+            }
+
+            // Weekly bar + weight line: use muted gold in light, blue in dark.
+            if (ch.data && ch.data.datasets && ch.data.datasets[0]) {
+                if (typeof ch.data.datasets[0].borderColor === "string" && ch.data.datasets[0].borderColor.indexOf("#") === 0) {
+                    ch.data.datasets[0].borderColor = light ? "#b08a33" : "#38bdf8";
+                    ch.data.datasets[0].backgroundColor = light ? "rgba(176,138,51,0.20)" : "rgba(56,189,248,0.15)";
+                } else if (typeof ch.data.datasets[0].backgroundColor === "string"
+                    && ch.data.datasets[0].backgroundColor.indexOf("#") === 0) {
+                    ch.data.datasets[0].backgroundColor = light ? "#b08a33" : "#38bdf8";
+                }
+            }
+            ch.update();
+        });
+    }
+
     function updateThemeButtons() {
         const isLight = document.body.classList.contains("light");
 
@@ -868,6 +1061,7 @@ function initializeTheme() {
     }
 
     updateThemeButtons();
+    applyThemeColors();
 
     // Menu theme button
     if (menuThemeBtn) {
@@ -882,6 +1076,7 @@ function initializeTheme() {
             );
 
             updateThemeButtons();
+            applyThemeColors();
         });
     }
 
@@ -898,13 +1093,58 @@ function initializeTheme() {
             );
 
             updateThemeButtons();
+            applyThemeColors();
         });
     }
 }
 
+function isLightMode() {
+    return document.body.classList.contains("light");
+}
+
+let quoteTimer = null;
+
+// Smoothly rotate the greeting quote. Uses a single controlled timer,
+// fades via CSS (opacity + slight translate), and never re-renders the page.
 function loadQuote() {
     if (!quote) return;
-    quote.textContent = MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
+
+    // Guard against duplicate rotation timers (e.g. if init runs twice).
+    if (quoteTimer) {
+        clearInterval(quoteTimer);
+        quoteTimer = null;
+    }
+
+    let lastIndex = -1;
+
+    const pickQuote = () => {
+        let idx = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+        if (idx === lastIndex) {
+            idx = (idx + 1) % MOTIVATIONAL_QUOTES.length;
+        }
+        lastIndex = idx;
+        return MOTIVATIONAL_QUOTES[idx];
+    };
+
+    const reduced =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Initial quote (no animation on first paint).
+    quote.textContent = pickQuote();
+
+    if (reduced) return;
+
+    const swap = () => {
+        quote.classList.add("quote-swapping");
+        // Let the fade-out begin before swapping text.
+        setTimeout(() => {
+            quote.textContent = pickQuote();
+            quote.classList.remove("quote-swapping");
+        }, 330);
+    };
+
+    quoteTimer = setInterval(swap, 16000);
 }
 
 function startClock() {
@@ -3641,18 +3881,25 @@ function initializeNotifications() {
 // ACE TRACKER - PUSH SUBSCRIPTION
 // =====================================================
 
-// The push API is served by the same Node server as the app. Keeping both on
-// one origin avoids a hard-coded localhost URL and CORS problems in production.
-const PUSH_SERVER_URL = `${window.location.origin}/api`;
+// The push API lives on the Ace Tracker backend. On Vercel (static frontend)
+// the backend is a separate host, so its base URL is injected at build time via
+// api-config.js (VITE_API_URL). When unset it falls back to the same-origin
+// path (/api), which is correct for local development or a single-node host.
+const PUSH_SERVER_URL = (
+    (typeof window.ACE_API_URL === "string" && window.ACE_API_URL.trim())
+    || `${window.location.origin}/api`
+).replace(/\/$/, "");
 
 let cachedPushSubscription = null;
 let backgroundPushActive = false;
 let pushSessionPromise = null;
 
 function pushApiFetch(path, options = {}) {
+    // "include" works for both same-origin (local) and cross-origin (Vercel ->
+    // backend) requests so the private HTTP-only session cookie is always sent.
     return fetch(`${PUSH_SERVER_URL}${path}`, {
         ...options,
-        credentials: "same-origin"
+        credentials: "include"
     });
 }
 

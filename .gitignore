@@ -1,7 +1,35 @@
+# Environment / secrets
 .env
 .env.*
 !.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Dependencies
 node_modules/
 backend/node_modules/
+
+# Build / generated output
+.vercel/
+vercel/
+dist/
+build/
+out/
+
+# Local database & persistent data
+*.sqlite
+*.sqlite-*
+backend/data/
+
+# Logs
 *.log
+npm-debug.log*
+
+# OS / editor
 .DS_Store
+Thumbs.db
+
+# Test / scratch artifacts (not part of the app)
+FINAL_TEST.txt
+assets/achievement_files/

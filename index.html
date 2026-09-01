@@ -32,9 +32,12 @@
 
     <aside id="appSideMenu" class="app-side-menu" aria-hidden="true">
         <div class="app-side-menu-header">
-            <div>
-                <span class="app-menu-brand">🚀 Ace Tracker</span>
-                <small>Navigate your progress</small>
+            <div class="app-menu-brand-block">
+                <img src="icon.png" alt="Ace Tracker logo" class="app-menu-brand-logo">
+                <div class="app-menu-brand-text">
+                    <span class="app-menu-brand">Ace Tracker</span>
+                    <small>Navigate your progress</small>
+                </div>
             </div>
             <button id="closeAppMenuBtn" class="app-menu-close" type="button" aria-label="Close menu">✕</button>
         </div>
@@ -67,7 +70,7 @@
         </div>
 
         <div class="app-menu-footer">
-            <span>Version 1.0</span>
+            <span>© 2026 Ace Tracker</span>
         </div>
     </aside>
 
@@ -75,7 +78,10 @@
 
         <div class="login-box">
 
-            <h1>🚀 Ace Tracker</h1>
+            <div class="login-brand">
+                <img src="icon.png" alt="Ace Tracker logo" class="login-logo">
+                <h1>Ace Tracker</h1>
+            </div>
 
             <input type="text" id="loginName" placeholder="Enter your name">
 
@@ -95,16 +101,17 @@
 
         <header>
 
-            <h1>Ace Tracker</h1>
+            <div class="header-brand">
+                <img src="icon.png" alt="Ace Tracker logo" class="header-logo">
+            </div>
 
+            <h1 class="header-title">Ace Tracker</h1>
 
-            <p class="version">🚀 Version 1.0</p>
+            <p class="header-tagline">Your Personal Habit & Fitness Dashboard</p>
 
-            <p>Your Personal Habit & Fitness Dashboard</p>
+            <h3 id="liveClock" class="header-clock"></h3>
 
-            <p id="currentDate"></p>
-
-            <h3 id="liveClock"></h3>
+            <p id="currentDate" class="header-date"></p>
 
 
             <!-- =========================
@@ -796,9 +803,13 @@
 
     <footer>
 
-        <p>🚀 Ace Tracker Version 1.0</p>
+        <div class="footer-inner">
 
-        <p>Built by Amrut with ❤️</p>
+            <img src="icon.png" alt="Ace Tracker" class="footer-logo">
+
+            <p class="footer-text">© 2026 Ace Tracker&nbsp;•&nbsp;Made by Amrutkumar V.</p>
+
+        </div>
 
     </footer>
 
@@ -816,6 +827,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script src="api-config.js"></script>
 
     <script src="script.js"></script>
 
