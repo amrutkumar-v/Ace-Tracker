@@ -33,3 +33,6 @@ Thumbs.db
 # Test / scratch artifacts (not part of the app)
 FINAL_TEST.txt
 assets/achievement_files/
+
+.vercel
+.env*

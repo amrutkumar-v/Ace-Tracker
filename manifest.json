@@ -8,7 +8,7 @@
   "description": "Personal productivity and habit tracker",
   "icons": [
     {
-      "src": "assets/av-logo.png",
+      "src": "icon.png",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any"

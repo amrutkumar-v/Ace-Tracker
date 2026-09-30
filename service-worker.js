@@ -73,8 +73,8 @@ self.addEventListener("push", event => {
 
         await self.registration.showNotification(data.title || "Ace Reminder", {
             body: data.message || data.body || "Don't forget your Ace Tracker tasks.",
-            icon: "/assets/av-logo.png",
-            badge: "/assets/av-logo.png",
+            icon: "/icon.png",
+            badge: "/icon.png",
             tag: data.tag || "ace-tracker",
             renotify: true,
             requireInteraction: false,

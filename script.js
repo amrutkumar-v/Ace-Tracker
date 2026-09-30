@@ -4697,8 +4697,8 @@ async function showAceNotification(title, message, tag) {
 
             await registration.showNotification(title, {
                 body: message,
-                icon: "assets/av-logo.png",
-                badge: "assets/av-logo.png",
+                icon: "icon.png",
+                badge: "icon.png",
                 tag: tag || "ace-tracker-reminder",
                 renotify: true,
                 data: { url: "/" }
@@ -4716,8 +4716,8 @@ async function showAceNotification(title, message, tag) {
     try {
         new Notification(title, {
             body: message,
-            icon: "assets/av-logo.png",
-            badge: "assets/av-logo.png"
+            icon: "icon.png",
+            badge: "icon.png"
         });
     } catch (error) {
         console.error(
