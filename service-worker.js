@@ -1,10 +1,15 @@
-const CACHE_NAME = "ace-tracker-v11";
-const APP_SHELL = ["/", "/index.html", "/style.css", "/script.js", "/manifest.json", "/icon.png", "/api-config.js"];
+const CACHE_NAME = "ace-tracker-v13";
+const APP_SHELL = ["/", "/index.html", "/style.css", "/script.js", "/manifest.json", "/api-config.js"];
+const OPTIONAL_ASSETS = ["/assets/av-logo.png", "/assets/av-banner.png"];
 
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(APP_SHELL))
+            .then(async cache => {
+                // A single missing file must never abort installation.
+                await Promise.allSettled(APP_SHELL.map(url => cache.add(url)));
+                await Promise.allSettled(OPTIONAL_ASSETS.map(url => cache.add(url)));
+            })
             .then(() => self.skipWaiting())
     );
 });
@@ -66,10 +71,10 @@ self.addEventListener("push", event => {
             data = { message: event.data ? event.data.text() : "Don't break your streak!" };
         }
 
-        await self.registration.showNotification(data.title || "🔔 Ace Reminder", {
+        await self.registration.showNotification(data.title || "Ace Reminder", {
             body: data.message || data.body || "Don't forget your Ace Tracker tasks.",
-            icon: "/icon.png",
-            badge: "/icon.png",
+            icon: "/assets/av-logo.png",
+            badge: "/assets/av-logo.png",
             tag: data.tag || "ace-tracker",
             renotify: true,
             requireInteraction: false,

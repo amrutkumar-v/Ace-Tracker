@@ -1,16 +1,17 @@
 {
-    "name": "Ace Tracker",
-    "short_name": "Ace Tracker",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#121212",
-    "theme_color": "#121212",
-    "description": "Personal productivity and habit tracker",
-    "icons": [
-      {
-        "src": "icon.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "Ace Tracker",
+  "short_name": "Ace Tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08090b",
+  "theme_color": "#08090b",
+  "description": "Personal productivity and habit tracker",
+  "icons": [
+    {
+      "src": "assets/av-logo.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

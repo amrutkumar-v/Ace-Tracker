@@ -4,14 +4,21 @@
 <head>
 
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#121212">
+    <meta name="theme-color" content="#08090b">
+    <meta name="description" content="Ace Tracker — 90-day habit, fitness and productivity tracker with XP, streaks and BMI tracking.">
+    <meta name="color-scheme" content="dark light">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ace Tracker">
+    <link rel="icon" type="image/png" href="assets/av-logo.png">
+    <link rel="apple-touch-icon" href="assets/av-logo.png">
 
     <!-- =========================
          Basic Page Settings
     ========================== -->
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <title>Ace Tracker</title>
 
@@ -22,51 +29,115 @@
 <body>
 
     <!-- =========================
-         ACE TRACKER APP NAVIGATION
+         STICKY APP BAR (always visible)
     ========================== -->
-    <button id="appMenuBtn" class="app-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
-        ☰
-    </button>
+
+    <header class="app-bar">
+
+        <button id="appMenuBtn" class="app-menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="appSideMenu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+                <path d="M3.5 6.5h17"></path>
+                <path d="M3.5 12h17"></path>
+                <path d="M3.5 17.5h17"></path>
+            </svg>
+        </button>
+
+        <div class="app-bar-identity">
+            <h1 class="app-bar-name">Ace Tracker</h1>
+            <span class="app-bar-sub">90-Day Winter Arc</span>
+        </div>
+
+        <span class="app-bar-brand">
+            <img src="assets/av-logo.png" width="30" height="30" class="header-logo" alt="AV creator mark">
+        </span>
+
+    </header>
+
+
+    <!-- =========================
+         SIDE MENU
+    ========================== -->
 
     <div id="appMenuOverlay" class="app-menu-overlay"></div>
 
-    <aside id="appSideMenu" class="app-side-menu" aria-hidden="true">
+    <aside id="appSideMenu" class="app-side-menu" aria-label="Ace Tracker menu" aria-hidden="true">
         <div class="app-side-menu-header">
             <div class="app-menu-brand-block">
-                <img src="icon.png" alt="Ace Tracker logo" class="app-menu-brand-logo">
+                <img src="assets/av-logo.png" width="28" height="28" alt="" class="app-menu-brand-logo">
                 <div class="app-menu-brand-text">
                     <span class="app-menu-brand">Ace Tracker</span>
-                    <small>Navigate your progress</small>
+                    <small>From idea to reality</small>
                 </div>
             </div>
-            <button id="closeAppMenuBtn" class="app-menu-close" type="button" aria-label="Close menu">✕</button>
+            <button id="closeAppMenuBtn" class="app-menu-close" type="button" aria-label="Close menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+                    <path d="M6 6l12 12"></path>
+                    <path d="M18 6L6 18"></path>
+                </svg>
+            </button>
         </div>
 
-        <nav class="app-nav" aria-label="Ace Tracker navigation">
-            <button class="app-nav-item active" data-page="dashboard" type="button">
-                <span>🏠</span><span>Dashboard</span>
+        <nav class="app-nav" aria-label="Primary">
+            <button class="app-nav-item active" data-page="dashboard" type="button" aria-current="page">
+                <span class="app-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M3 10.4 12 3.5l9 6.9"></path>
+                        <path d="M5.6 9.3V19a1.5 1.5 0 0 0 1.5 1.5h2.8v-5.4h4.2v5.4h2.8A1.5 1.5 0 0 0 18.4 19V9.3"></path>
+                    </svg>
+                </span>
+                <span>Dashboard</span>
             </button>
             <button class="app-nav-item" data-page="progress" type="button">
-                <span>📊</span><span>Progress</span>
+                <span class="app-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M3.5 20.5h17"></path>
+                        <path d="M7 17V10.5"></path>
+                        <path d="M12 17V5.5"></path>
+                        <path d="M17 17v-4"></path>
+                    </svg>
+                </span>
+                <span>Progress</span>
             </button>
             <button class="app-nav-item" data-page="tasks" type="button">
-                <span>🎯</span><span>Tasks</span>
+                <span class="app-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"></rect>
+                        <path d="M8.4 12.1l2.4 2.4 4.8-4.8"></path>
+                    </svg>
+                </span>
+                <span>Tasks</span>
             </button>
             <button class="app-nav-item" data-page="notifications" type="button">
-                <span>🔔</span><span>Notifications</span>
+                <span class="app-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M18 8.5a6 6 0 1 0-12 0c0 5.5-2 6.5-2 6.5h16s-2-1-2-6.5"></path>
+                        <path d="M13.8 19a2 2 0 0 1-3.6 0"></path>
+                    </svg>
+                </span>
+                <span>Notifications</span>
             </button>
             <button class="app-nav-item" data-page="settings" type="button">
-                <span>⚙️</span><span>Settings</span>
+                <span class="app-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M4 7.5h8"></path>
+                        <path d="M17 7.5h3"></path>
+                        <circle cx="14.5" cy="7.5" r="2.2"></circle>
+                        <path d="M4 16.5h3"></path>
+                        <path d="M12 16.5h8"></path>
+                        <circle cx="9.5" cy="16.5" r="2.2"></circle>
+                    </svg>
+                </span>
+                <span>Settings</span>
             </button>
         </nav>
 
         <div class="app-menu-divider"></div>
 
         <div class="app-menu-quick-actions">
-            <button id="menuCustomizeBtn" type="button">🎯 Customize Tasks</button>
-            <button id="menuThemeBtn" type="button">🌙 Dark Mode</button>
-            <button id="menuResetBtn" type="button">🔄 Reset Progress</button>
-            <button id="menuLogoutBtn" type="button">🚪 Logout</button>
+            <button id="menuCustomizeBtn" type="button">Customize Tasks</button>
+            <button id="menuThemeBtn" type="button">Dark Mode</button>
+            <button id="menuResetBtn" type="button">Reset Progress</button>
+            <button id="menuLogoutBtn" type="button">Logout</button>
         </div>
 
         <div class="app-menu-footer">
@@ -74,18 +145,24 @@
         </div>
     </aside>
 
+
+    <!-- =========================
+         LOGIN
+    ========================== -->
+
     <div id="loginScreen" class="login-screen">
 
         <div class="login-box">
 
             <div class="login-brand">
-                <img src="icon.png" alt="Ace Tracker logo" class="login-logo">
+                <img src="assets/av-logo.png" width="48" height="48" alt="" class="login-logo">
                 <h1>Ace Tracker</h1>
             </div>
 
-            <input type="text" id="loginName" placeholder="Enter your name">
+            <label class="visually-hidden" for="loginName">Your name</label>
+            <input type="text" id="loginName" placeholder="Enter your name" autocomplete="name" enterkeyhint="go">
 
-            <button id="loginBtn">
+            <button id="loginBtn" type="button">
                 Enter
             </button>
 
@@ -93,195 +170,147 @@
 
     </div>
 
+
+    <!-- =========================
+         DASHBOARD
+    ========================== -->
+
     <div class="container">
 
-        <!-- =========================
-             Header
-        ========================== -->
+        <section class="app-hero" aria-label="Today at a glance">
 
-        <header>
+            <p class="app-bar-time"><time id="liveClock"></time></p>
+            <p id="currentDate" class="app-hero-date"></p>
 
-            <div class="header-brand">
-                <img src="icon.png" alt="Ace Tracker logo" class="header-logo">
-            </div>
+            <h2 id="welcomeText" class="app-hero-title">Welcome</h2>
+            <p class="app-hero-tagline">Your Personal Habit &amp; Fitness Dashboard</p>
 
-            <h1 class="header-title">Ace Tracker</h1>
+        </section>
 
-            <p class="header-tagline">Your Personal Habit & Fitness Dashboard</p>
+        <main class="dash">
 
-            <h3 id="liveClock" class="header-clock"></h3>
+            <!-- Tier 1 — today's progress -->
+            <div class="dash-lead">
 
-            <p id="currentDate" class="header-date"></p>
-
-
-            <!-- =========================
-                 Dashboard Cards
-            ========================== -->
-
-            <div class="dashboard">
-
-                <!-- Level -->
-                <div class="card">
-
-                    <h2>⭐ Level</h2>
-
-                    <p id="levelText">Level 1</p>
-
-                    <div class="xp-bar">
-                        <div id="xpFill" class="xp-fill"></div>
+                <section class="panel panel-today" aria-labelledby="todayHeading">
+                    <div class="panel-head">
+                        <h3 class="panel-kicker" id="todayHeading">Today</h3>
+                        <span class="panel-score" id="todayScore">0%</span>
                     </div>
 
-                    <small id="xpText">0 / 100 XP</small>
+                    <div class="today-body">
 
-                </div>
+                        <div class="progress-ring">
+                            <svg viewBox="0 0 170 170" aria-hidden="true" focusable="false">
+                                <circle class="progress-bg" cx="85" cy="85" r="70"></circle>
+                                <circle class="progress-bar" id="progressCircle" cx="85" cy="85" r="70"></circle>
+                            </svg>
+                            <div class="progress-number" id="progressPercent">0%</div>
+                        </div>
 
-                <!-- Welcome -->
-                <div class="card">
+                        <div class="today-facts">
+                            <p class="today-progress-text" id="progressText">0/0 Tasks • 0% Completed</p>
 
-                    <h2 id="welcomeText">👋 Welcome, Amrut</h2>
-
-                    <p id="quote">
-                        Stay consistent 💪
-                    </p>
-
-                </div>
-
-                <!-- Progress Ring -->
-                <div class="card">
-
-                    <h2>📊 Progress</h2>
-
-                    <div class="progress-ring">
-
-                        <svg width="170" height="170">
-
-                            <defs>
-
-                                <linearGradient id="progressGradient">
-
-                                    <stop offset="0%" stop-color="#38bdf8" />
-
-                                    <stop offset="100%" stop-color="#22c55e" />
-
-                                </linearGradient>
-
-                            </defs>
-
-                            <circle class="progress-bg" cx="85" cy="85" r="70">
-                            </circle>
-
-                            <circle class="progress-bar" id="progressCircle" cx="85" cy="85" r="70">
-                            </circle>
-
-                        </svg>
-
-                        <div class="progress-number" id="progressPercent">
-
-                            0%
-
+                            <dl class="streak-row">
+                                <div class="streak-cell">
+                                    <dt>Current streak</dt>
+                                    <dd id="streakText">0 Days</dd>
+                                </div>
+                                <div class="streak-cell">
+                                    <dt>Best streak</dt>
+                                    <dd id="bestStreak">0 Days</dd>
+                                </div>
+                            </dl>
                         </div>
 
                     </div>
+                </section>
 
-                    <p id="progressText">
+                <!-- Tier 2 — progression -->
+                <section class="panel panel-level" aria-labelledby="levelHeading">
+                    <div class="panel-head">
+                        <h3 class="panel-kicker" id="levelHeading">Progression</h3>
+                        <span class="xp-value" id="totalXP">0 XP</span>
+                    </div>
 
-                        0 / 10 Tasks
+                    <div class="level-head">
+                        <span class="level-name" id="levelText">Level 1</span>
+                        <span class="xp-value" id="xpText">0 / 100 XP</span>
+                    </div>
 
-                    </p>
-
-                </div>
-
-                <!-- Statistics -->
-
-                <div class="card">
-                    <h2>🔥 Current Streak</h2>
-                    <p id="streakText">0 Days</p>
-                </div>
-
-                <div class="card">
-
-                    <h2>🏆 Best Streak</h2>
-
-                    <p id="bestStreak">0 Days</p>
-
-                </div>
-
-
-                <div class="card">
-                    <h2>🏆 Golden Days</h2>
-                    <p id="goldenDays">0</p>
-                </div>
-
-                <div class="card">
-                    <h2>📈 Completion Rate</h2>
-                    <p id="completionRate">0%</p>
-                </div>
-
-                <div class="card">
-
-                    <h2>⚡ Total XP</h2>
-
-                    <p id="totalXP">0 XP</p>
-
-                </div>
-
-                <div class="card">
-                    <h2>⏳ Days Remaining</h2>
-                    <p id="daysRemaining">90</p>
-                </div>
-
-                <div class="card">
-                    <h2>📋 Total Tasks</h2>
-                    <p id="totalTasks">0 / 900</p>
-                </div>
-
-                <div class="card">
-                    <h2>🎯 Today's Score</h2>
-                    <p id="todayScore">0%</p>
-                </div>
-
-                <div class="card">
-                    <h2>📅 Challenge Day</h2>
-                    <p id="challengeDay">Day 1 / 90</p>
-                </div>
+                    <div class="xp-bar" role="progressbar" aria-labelledby="levelHeading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="xpBar">
+                        <div id="xpFill" class="xp-fill"></div>
+                    </div>
+                </section>
 
             </div>
 
-        </header>
+            <!-- Tier 3 — secondary metrics -->
+            <section class="metric-grid" aria-label="Challenge metrics">
+
+                <div class="metric metric--accent">
+                    <span class="metric-label">Challenge day</span>
+                    <span class="metric-value" id="challengeDay">Day 1 / 90</span>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Days remaining</span>
+                    <span class="metric-value" id="daysRemaining">90</span>
+                </div>
+
+                <div class="metric metric--pos">
+                    <span class="metric-label">Golden days</span>
+                    <span class="metric-value" id="goldenDays">0</span>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Tasks done</span>
+                    <span class="metric-value" id="totalTasks">0 / 900</span>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Completion rate</span>
+                    <span class="metric-value" id="completionRate">0%</span>
+                </div>
+
+            </section>
+
+            <p id="quote" class="dash-quote">Stay consistent 💪</p>
+
+        </main>
 
     </div>
 
 
     <!-- =========================
-         Weight & BMI Tracker
+         WEIGHT & BMI TRACKER
     ========================== -->
 
-    <section class="body-progress">
+    <section class="body-progress" aria-labelledby="bodyProgressHeading">
 
-        <h2>⚖️ Weight & BMI Tracker</h2>
+ <h2 class="section-title" id="bodyProgressHeading"> Weight &amp; BMI Tracker</h2>
 
         <div class="body-progress-grid">
 
             <!-- Height -->
             <div class="body-progress-card">
 
-                <h3>📏 Height</h3>
+                <h3>Height</h3>
 
                 <div class="input-group">
-
+                    <label class="visually-hidden" for="heightInput">Height in centimetres</label>
                     <input
                         type="number"
                         id="heightInput"
                         placeholder="Enter height"
+                        inputmode="decimal"
                         min="1"
                         step="0.1"
                     >
-
                     <span>cm</span>
-
                 </div>
 
-                <button id="saveHeightBtn">
+                <button id="saveHeightBtn" type="button">
                     Save Height
                 </button>
 
@@ -291,24 +320,23 @@
             <!-- Weight -->
             <div class="body-progress-card">
 
-                <h3>⚖️ Add Weight</h3>
+ <h3> Add Weight</h3>
 
                 <div class="input-group">
-
+                    <label class="visually-hidden" for="weightInput">Weight in kilograms</label>
                     <input
                         type="number"
                         id="weightInput"
                         placeholder="Enter weight"
+                        inputmode="decimal"
                         min="1"
                         step="0.1"
                     >
-
                     <span>kg</span>
-
                 </div>
 
-                <button id="addWeightBtn">
-                    ➕ Add Weight
+                <button id="addWeightBtn" type="button">
+ Add Weight
                 </button>
 
             </div>
@@ -317,34 +345,26 @@
             <!-- Current Stats -->
             <div class="body-progress-card">
 
-                <h3>📊 Current Stats</h3>
+                <h3>Current Stats</h3>
 
                 <p>
                     Current Weight:
-                    <strong id="currentWeight">
-                        —
-                    </strong>
+                    <strong id="currentWeight">—</strong>
                 </p>
 
                 <p>
                     BMI:
-                    <strong id="currentBMI">
-                        —
-                    </strong>
+                    <strong id="currentBMI">—</strong>
                 </p>
 
                 <p>
                     Category:
-                    <strong id="bmiCategory">
-                        —
-                    </strong>
+                    <strong id="bmiCategory">—</strong>
                 </p>
 
                 <p>
                     Weight Change:
-                    <strong id="weightChange">
-                        —
-                    </strong>
+                    <strong id="weightChange">—</strong>
                 </p>
 
             </div>
@@ -356,9 +376,9 @@
 
         <div class="weight-chart-card">
 
-            <h3>📈 Weight Progress</h3>
+            <h3>Weight Progress</h3>
 
-            <canvas id="weightChart"></canvas>
+            <canvas id="weightChart" role="img" aria-label="Weight progress chart"></canvas>
 
         </div>
 
@@ -367,7 +387,7 @@
 
         <div class="weight-history-card">
 
-            <h3>📋 Weight History</h3>
+            <h3>Weight History</h3>
 
             <div id="weightHistory">
 
@@ -380,13 +400,15 @@
         </div>
 
     </section>
+
+
     <!-- =========================
-         Daily Tasks
+         DAILY TASKS
     ========================== -->
 
-    <section class="tasks">
+    <section class="tasks" aria-labelledby="tasksHeading">
 
-        <h2>Today's Tasks</h2>
+        <h2 class="section-title" id="tasksHeading">Today's Tasks</h2>
 
         <div id="taskList" class="task-list">
             <!-- Tasks will be added here later -->
@@ -397,204 +419,219 @@
 
 
     <!-- =========================
-     Notifications
-========================== -->
-
-<section class="notification-section">
-
-    <h2>🔔 Notifications</h2>
-
-    <div class="notification-card">
-
-        <div class="notification-icon">
-            🔔
-        </div>
-
-        <div class="notification-info">
-
-            <h3>Stay on Track</h3>
-
-            <p id="notificationStatus">
-                Notifications are currently OFF
-            </p>
-
-            <p id="nextReminder">
-                No reminders scheduled
-            </p>
-
-        </div>
-
-        <button id="notificationSettingsBtn" class="notification-settings-btn">
-            ⚙️ Manage Reminders
-        </button>
-
-    </div>
-
-</section>
-
-<!-- =========================
-     Notification Settings Panel
-========================== -->
-
-<div id="notificationPanel" class="notification-panel">
-
-    <div class="notification-panel-content">
-
-        <!-- HEADER -->
-        <div class="notification-panel-header">
-
-            <div>
-                <h2>🔔 Notification Control Center</h2>
-                <p>Control exactly how Ace reminds you.</p>
-            </div>
-
-            <button id="closeNotificationPanel" type="button">
-                ✕
-            </button>
-
-        </div>
-
-
-        <!-- BROWSER PERMISSION -->
-        <div class="notification-permission">
-
-            <h3>🔔 System Notifications</h3>
-
-            <p id="permissionStatus">
-                Notifications are disabled.
-            </p>
-
-            <button id="enableNotificationsBtn" type="button">
-                🔔 Enable Notifications
-            </button>
-
-            <button id="testPushNotificationBtn" class="save-notification-btn" type="button">
-                🧪 Send a Test Notification
-            </button>
-
-        </div>
-
-
-        <!-- MASTER CONTROL -->
-        <div class="notification-master-setting">
-
-            <div>
-                <h3>🔔 Notifications</h3>
-                <p>Master switch for Ace Tracker notifications.</p>
-            </div>
-
-            <label class="notification-switch">
-
-                <input
-                    type="checkbox"
-                    id="masterNotificationEnabled"
-                >
-
-                <span class="notification-slider"></span>
-
-            </label>
-
-        </div>
-
-
-        <!-- TASK NOTIFICATIONS -->
-        <div class="notification-task-section">
-
-            <div class="notification-section-title">
-
-                <h3>📋 Task Notifications</h3>
-
-                <p>
-                    Customize notifications for every task individually.
-                </p>
-
-            </div>
-
-            <div id="notificationTaskList">
-
-                <!-- Tasks will be generated here by JavaScript -->
-
-            </div>
-
-        </div>
-
-
-        <!-- GOLDEN DAY -->
-        <div class="notification-special-setting">
-
-            <div>
-
-                <h3>🏆 Golden Day</h3>
-
-                <p>
-                    Notify me when every task is completed.
-                </p>
-
-            </div>
-
-            <label class="notification-switch">
-
-                <input
-                    type="checkbox"
-                    id="goldenDayNotificationEnabled"
-                    checked
-                >
-
-                <span class="notification-slider"></span>
-
-            </label>
-
-        </div>
-
-
-        <!-- SAVE -->
-        <button
-            id="saveNotificationSettings"
-            class="save-notification-btn"
-            type="button"
-        >
-            💾 Save Notification Settings
-        </button>
-
-    </div>
-
-</div>
-
-    <!-- =========================
-         90-Day Calendar
+         NOTIFICATIONS
     ========================== -->
 
-    <section class="calendar-section">
+    <section class="notification-section" aria-labelledby="notificationsHeading">
 
-        <h2>📅 90-Day Progress</h2>
+        <h2 class="section-title" id="notificationsHeading">Notifications</h2>
 
-        <div id="calendar" class="calendar-grid"></div>
+        <div class="notification-card">
+
+            <div class="notification-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M18 8.5a6 6 0 1 0-12 0c0 5.5-2 6.5-2 6.5h16s-2-1-2-6.5"></path>
+                    <path d="M13.8 19a2 2 0 0 1-3.6 0"></path>
+                </svg>
+            </div>
+
+            <div class="notification-info">
+
+                <h3>Stay on Track</h3>
+
+                <p id="notificationStatus">
+                    Notifications are currently OFF
+                </p>
+
+                <p id="nextReminder">
+                    No reminders scheduled
+                </p>
+
+            </div>
+
+            <button id="notificationSettingsBtn" class="notification-settings-btn" type="button">
+ Manage Reminders
+            </button>
+
+        </div>
 
     </section>
 
     <!-- =========================
-         Analytics
+         NOTIFICATION SETTINGS PANEL
     ========================== -->
 
-    <section class="analytics">
+    <div id="notificationPanel" class="notification-panel" role="dialog" aria-modal="true" aria-label="Notification control centre">
 
-        <h2>📊 Analytics Dashboard</h2>
+        <div class="notification-panel-content">
+
+            <!-- HEADER -->
+            <div class="notification-panel-header">
+
+                <div>
+                    <h2>Notification Control Center</h2>
+                    <p>Control exactly how Ace reminds you.</p>
+                </div>
+
+                <button id="closeNotificationPanel" type="button" aria-label="Close notification settings">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+                        <path d="M6 6l12 12"></path>
+                        <path d="M18 6L6 18"></path>
+                    </svg>
+                </button>
+
+            </div>
+
+
+            <!-- BROWSER PERMISSION -->
+            <div class="notification-permission">
+
+                <h3>System Notifications</h3>
+
+                <p id="permissionStatus">
+                    Notifications are disabled.
+                </p>
+
+                <button id="enableNotificationsBtn" type="button">
+                    Enable Notifications
+                </button>
+
+                <button id="testPushNotificationBtn" class="save-notification-btn" type="button">
+                    Send a Test Notification
+                </button>
+
+            </div>
+
+
+            <!-- MASTER CONTROL -->
+            <div class="notification-master-setting">
+
+                <div>
+                    <h3>Notifications</h3>
+                    <p>Master switch for Ace Tracker notifications.</p>
+                </div>
+
+                <label class="notification-switch">
+
+                    <input
+                        type="checkbox"
+                        id="masterNotificationEnabled"
+                        aria-label="Enable all notifications"
+                    >
+
+                    <span class="notification-slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- TASK NOTIFICATIONS -->
+            <div class="notification-task-section">
+
+                <div class="notification-section-title">
+
+                    <h3>Task Notifications</h3>
+
+                    <p>
+                        Customize notifications for every task individually.
+                    </p>
+
+                </div>
+
+                <div id="notificationTaskList">
+
+                    <!-- Tasks will be generated here by JavaScript -->
+
+                </div>
+
+            </div>
+
+
+            <!-- GOLDEN DAY -->
+            <div class="notification-special-setting">
+
+                <div>
+
+ <h3> Golden Day</h3>
+
+                    <p>
+                        Notify me when every task is completed.
+                    </p>
+
+                </div>
+
+                <label class="notification-switch">
+
+                    <input
+                        type="checkbox"
+                        id="goldenDayNotificationEnabled"
+                        checked
+                        aria-label="Notify me on a golden day"
+                    >
+
+                    <span class="notification-slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- SAVE -->
+            <button
+                id="saveNotificationSettings"
+                class="save-notification-btn"
+                type="button"
+            >
+                Save Notification Settings
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         90-DAY CALENDAR
+    ========================== -->
+
+    <section class="calendar-section" aria-labelledby="calendarHeading">
+
+        <h2 class="section-title" id="calendarHeading">90-Day Progress</h2>
+
+        <div id="calendar" class="calendar-grid"></div>
+
+        <ul class="calendar-legend">
+            <li><i class="swatch-green" aria-hidden="true"></i> Golden — all tasks done</li>
+            <li><i class="swatch-yellow" aria-hidden="true"></i> Partial — some tasks done</li>
+            <li><i class="swatch-red" aria-hidden="true"></i> Missed — no tasks done</li>
+            <li><i class="swatch-today" aria-hidden="true"></i> Current day</li>
+        </ul>
+
+    </section>
+
+    <!-- =========================
+         ANALYTICS
+    ========================== -->
+
+    <section class="analytics" aria-labelledby="analyticsHeading">
+
+        <h2 class="section-title" id="analyticsHeading">Analytics Dashboard</h2>
 
         <div class="charts">
 
             <div class="chart-card">
 
-                <h3>📅 Weekly Progress</h3>
+                <h3>Weekly Progress</h3>
 
-                <canvas id="weeklyChart"></canvas>
+                <canvas id="weeklyChart" role="img" aria-label="Tasks completed per day this week"></canvas>
 
             </div>
 
             <div class="chart-card">
 
-                <h3>🥧 Task Distribution</h3>
+                <h3>Task Distribution</h3>
 
-                <canvas id="pieChart"></canvas>
+                <canvas id="pieChart" role="img" aria-label="Completed versus remaining tasks today"></canvas>
 
             </div>
 
@@ -603,37 +640,28 @@
     </section>
 
     <!-- =========================
-         Monthly Status
+         MONTHLY STATUS
     ========================== -->
 
-    <section id="monthlyStatsSection" class="analytics">
+    <section id="monthlyStatsSection" class="analytics" aria-labelledby="monthlyHeading">
 
-        <h2>📅 Monthly Statistics</h2>
+        <h2 class="section-title" id="monthlyHeading">Monthly Statistics</h2>
 
-        <div class="dashboard">
+        <div class="metric-grid">
 
-            <div class="card">
-
-                <h2>📋 Tasks This Month</h2>
-
-                <p id="monthTasks">0</p>
-
+            <div class="metric">
+                <span class="metric-label">Tasks this month</span>
+                <span class="metric-value" id="monthTasks">0</span>
             </div>
 
-            <div class="card">
-
-                <h2>🏆 Golden Days</h2>
-
-                <p id="monthGolden">0</p>
-
+            <div class="metric metric--pos">
+                <span class="metric-label">Golden days</span>
+                <span class="metric-value" id="monthGolden">0</span>
             </div>
 
-            <div class="card">
-
-                <h2>📈 Average Score</h2>
-
-                <p id="monthAverage">0%</p>
-
+            <div class="metric">
+                <span class="metric-label">Average score</span>
+                <span class="metric-value" id="monthAverage">0%</span>
             </div>
 
         </div>
@@ -642,15 +670,15 @@
 
 
     <!-- =========================
-         Settings Page
+         SETTINGS PAGE
     ========================== -->
 
-    <section id="appSettingsPage" class="app-settings-page">
+    <section id="appSettingsPage" class="app-settings-page" aria-labelledby="settingsHeading">
 
         <div class="app-page-header">
             <div>
-                <p class="app-page-kicker">⚙️ SETTINGS</p>
-                <h2>Ace Tracker Settings</h2>
+ <p class="app-page-kicker"> SETTINGS</p>
+                <h2 id="settingsHeading">Ace Tracker Settings</h2>
                 <p>Manage your tracker without scrolling through the whole dashboard.</p>
             </div>
         </div>
@@ -658,7 +686,12 @@
         <div class="settings-grid">
 
             <div class="settings-card">
-                <div class="settings-card-icon">🎯</div>
+                <div class="settings-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
+                        <circle cx="12" cy="12" r="3.4" />
+                    </svg>
+                </div>
                 <div>
                     <h3>Customize Tasks</h3>
                     <p>Add, rename, remove and manage the tasks on your dashboard.</p>
@@ -667,16 +700,25 @@
             </div>
 
             <div class="settings-card">
-                <div class="settings-card-icon">🌗</div>
+                <div class="settings-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="8.4" />
+                        <path d="M12 3.6a8.4 8.4 0 0 0 0 16.8 8.4 8.4 0 0 0 0-16.8z" fill="currentColor" stroke="none" />
+                    </svg>
+                </div>
                 <div>
                     <h3>Appearance</h3>
                     <p>Switch between the light and dark themes.</p>
                 </div>
-                <button id="settingsThemeBtn" type="button">🌙 Dark Mode</button>
+                <button id="settingsThemeBtn" type="button">Dark Mode</button>
             </div>
 
             <div class="settings-card">
-                <div class="settings-card-icon">🔔</div>
+                <div class="settings-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18.2 8.6a6.4 6.4 0 1 0-3.2 11.2 6.6 6.6 0 0 1-.2-1.3c0-3.4 2.7-6.2 6.1-6.2-.6-.3-1.2-.5-1.9-.5a6.6 6.6 0 0 0-.8 0z" />
+                    </svg>
+                </div>
                 <div>
                     <h3>Notifications</h3>
                     <p>Manage task reminders and notification permissions.</p>
@@ -685,23 +727,30 @@
             </div>
 
             <div class="settings-card">
-                <div class="settings-card-icon">📊</div>
-            
+                <div class="settings-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5V10M10 19.5V5M16 19.5v-7M22 19.5H2.5" />
+                    </svg>
+                </div>
                 <div>
-                    <h3>Progress & Data</h3>
+                    <h3>Progress &amp; Data</h3>
                     <p>
                         Download your complete Ace Tracker progress,
                         including your 90-day history, tasks, streaks and weight data.
                     </p>
                 </div>
-            
                 <button id="settingsExportBtn" type="button">
-                    📥 Download Progress
+                    Download Progress
                 </button>
             </div>
 
             <div class="settings-card danger-card">
-                <div class="settings-card-icon">🔄</div>
+                <div class="settings-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.5 12a8.5 8.5 0 1 1-2.9-6.4" />
+                        <path d="M20.8 3.4v4.2h-4.2" />
+                    </svg>
+                </div>
                 <div>
                     <h3>Reset Progress</h3>
                     <p>Reset your tracker progress and start again.</p>
@@ -710,7 +759,12 @@
             </div>
 
             <div class="settings-card">
-                <div class="settings-card-icon">🚪</div>
+                <div class="settings-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.5 4.2h4.1a1.4 1.4 0 0 1 1.4 1.4v14a1.4 1.4 0 0 1-1.4 1.4H9.4A1.4 1.4 0 0 1 8 19.6v-15a1.4 1.4 0 0 1 1.4-1.4H13" />
+                        <path d="M12.5 12.2H5.8M8.5 9.4l-2.7 2.8 2.7 2.8" />
+                    </svg>
+                </div>
                 <div>
                     <h3>Logout</h3>
                     <p>Sign out of the current Ace Tracker profile.</p>
@@ -724,18 +778,18 @@
 
 
     <!-- =========================
-         Golden Day Popup
+         GOLDEN DAY POPUP
     ========================== -->
 
-    <div id="goldenPopup" class="popup">
+    <div id="goldenPopup" class="popup" role="alertdialog" aria-labelledby="goldenPopupTitle" aria-modal="true">
 
         <div class="popup-content">
 
-            <h2>🏆 Golden Day!</h2>
+            <h2 id="goldenPopupTitle">Golden Day!</h2>
 
-            <p>You completed all today's tasks! 🔥</p>
+            <p>You completed all of today's tasks. Streak secured.</p>
 
-            <button id="closePopup">Awesome!</button>
+            <button id="closePopup" type="button">Awesome!</button>
 
         </div>
 
@@ -743,82 +797,152 @@
 
 
 
-    <section class="export-section">
+    <section class="export-section" aria-labelledby="exportHeading">
 
-        <h2>📤 Export Progress</h2>
+        <h2 class="section-title" id="exportHeading">Export Progress</h2>
 
-        <button id="exportBtn" class="export-btn">
+        <button id="exportBtn" class="export-btn" type="button">
             Download Progress
         </button>
 
     </section>
 
     <div class="bottom-buttons">
-        <button id="resetBtn">🔄 Reset Progress</button>
-        <button id="logoutBtn">🚪 Logout</button>
-        <button id="taskCustomizerBtn">⚙️ Customize Tasks</button>
+        <button id="resetBtn" type="button">Reset Progress</button>
+        <button id="logoutBtn" type="button">Logout</button>
+        <button id="taskCustomizerBtn" type="button">Customize Tasks</button>
     </div>
 
-    <button id="installBtn" style="display:none;">
-        📲 Install Ace Tracker
+    <button id="installBtn" type="button" style="display:none;">
+        Install Ace Tracker
     </button>
 
     <!-- =========================
-     Task Customizer Panel
-========================== -->
+         TASK CUSTOMIZER PANEL
+    ========================== -->
 
-<div id="taskCustomizerPanel" class="task-customizer-panel">
+    <div id="taskCustomizerPanel" class="task-customizer-panel" role="dialog" aria-modal="true" aria-labelledby="taskCustomizerHeading">
 
-    <div class="task-customizer-content">
+        <div class="task-customizer-content">
 
-        <div class="task-customizer-header">
-            <h2>⚙️ Customize Tasks</h2>
+            <div class="task-customizer-header">
+                <h2 id="taskCustomizerHeading">Customize Tasks</h2>
 
-            <button id="closeTaskCustomizer" type="button">
-                ✕
+                <button id="closeTaskCustomizer" type="button" aria-label="Close task customizer">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+                        <path d="M6 6l12 12"></path>
+                        <path d="M18 6L6 18"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <p class="section-hint">
+                Customize the tasks that appear on your dashboard.
+            </p>
+
+            <div id="customizerTaskList">
+                <!-- Tasks will be added here later -->
+            </div>
+
+            <button id="addTaskBtn" type="button" class="add-task-btn">
+                Add New Task
             </button>
+
         </div>
-
-        <p>
-            Customize the tasks that appear on your dashboard.
-        </p>
-
-        <div id="customizerTaskList">
-            <!-- Tasks will be added here later -->
-        </div>
-
-        <button id="addTaskBtn" type="button" class="add-task-btn">
-            ➕ Add New Task
-        </button>
 
     </div>
 
-</div>
 
+    <!-- =========================
+         BOTTOM TAB BAR (mobile)
+    ========================== -->
+
+    <nav class="app-tab-bar" aria-label="Sections">
+
+        <button class="app-tab active" data-page="dashboard" type="button" aria-current="page">
+            <span class="app-tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M3 10.4 12 3.5l9 6.9"></path>
+                    <path d="M5.6 9.3V19a1.5 1.5 0 0 0 1.5 1.5h2.8v-5.4h4.2v5.4h2.8A1.5 1.5 0 0 0 18.4 19V9.3"></path>
+                </svg>
+            </span>
+            <span class="app-tab-label">Today</span>
+        </button>
+
+        <button class="app-tab" data-page="progress" type="button">
+            <span class="app-tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M3.5 20.5h17"></path>
+                    <path d="M7 17V10.5"></path>
+                    <path d="M12 17V5.5"></path>
+                    <path d="M17 17v-4"></path>
+                </svg>
+            </span>
+            <span class="app-tab-label">Progress</span>
+        </button>
+
+        <button class="app-tab" data-page="tasks" type="button">
+            <span class="app-tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"></rect>
+                    <path d="M8.4 12.1l2.4 2.4 4.8-4.8"></path>
+                </svg>
+            </span>
+            <span class="app-tab-label">Tasks</span>
+        </button>
+
+        <button class="app-tab" data-page="notifications" type="button">
+            <span class="app-tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M18 8.5a6 6 0 1 0-12 0c0 5.5-2 6.5-2 6.5h16s-2-1-2-6.5"></path>
+                    <path d="M13.8 19a2 2 0 0 1-3.6 0"></path>
+                </svg>
+            </span>
+            <span class="app-tab-label">Alerts</span>
+        </button>
+
+        <button class="app-tab" data-page="settings" type="button">
+            <span class="app-tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M4 7.5h8"></path>
+                    <path d="M17 7.5h3"></path>
+                    <circle cx="14.5" cy="7.5" r="2.2"></circle>
+                    <path d="M4 16.5h3"></path>
+                    <path d="M12 16.5h8"></path>
+                    <circle cx="9.5" cy="16.5" r="2.2"></circle>
+                </svg>
+            </span>
+            <span class="app-tab-label">Settings</span>
+        </button>
+
+    </nav>
 
 
     <!-- =========================
-         Footer
+         FOOTER
     ========================== -->
 
     <footer>
 
         <div class="footer-inner">
 
-            <img src="icon.png" alt="Ace Tracker" class="footer-logo">
+            <img src="assets/av-logo.png" width="22" height="22" class="footer-logo" alt="" loading="lazy" decoding="async">
 
-            <p class="footer-text">© 2026 Ace Tracker&nbsp;•&nbsp;Made by Amrutkumar V.</p>
+            <p class="footer-text">© 2026 Ace Tracker</p>
 
         </div>
+
+        <!-- AV brand banner: sits after the copyright content -->
+        <img src="assets/av-banner.png" class="brand-banner" alt="AV — From idea to reality" loading="lazy" decoding="async">
 
     </footer>
 
 
     <!-- =====================================================
      ACE SMART NOTIFICATIONS
-===================================================== -->
+    ===================================================== -->
 
-<div id="notificationContainer"></div>
+    <div id="notificationContainer" aria-live="polite" aria-atomic="false"></div>
 
     <!-- =========================
          JavaScript

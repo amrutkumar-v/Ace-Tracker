@@ -580,6 +580,13 @@ function updateXP() {
     if (levelText) levelText.textContent = `Level ${level}`;
     if (xpText) xpText.textContent = `${currentLevelXP} / ${XP_PER_LEVEL} XP`;
     if (xpFill) xpFill.style.width = `${(currentLevelXP / XP_PER_LEVEL) * 100}%`;
+
+    // Keep the accessible value of the XP bar in sync with the bar itself.
+    const xpBar = document.getElementById("xpBar");
+    if (xpBar) {
+        xpBar.setAttribute("aria-valuenow", String(currentLevelXP));
+        xpBar.setAttribute("aria-valuetext", `${currentLevelXP} of ${XP_PER_LEVEL} XP toward level ${level + 1}`);
+    }
 }
 
 // =====================================================
@@ -614,7 +621,7 @@ function handleTaskToggle(box, index) {
 
     if (isChallengeFinished(today)) {
         box.checked = !box.checked;
-        alert("The 90-day challenge is completed! 🏆");
+        alert("The 90-day challenge is completed!");
         return;
     }
 
@@ -779,7 +786,7 @@ function updateStatistics() {
 
     if (challengeDayText) {
         if (finished) {
-            challengeDayText.textContent = "Challenge Completed! 🏆";
+            challengeDayText.textContent = "Challenge Completed!";
         } else {
             challengeDayText.textContent = `Day ${safeDayNumber} / ${CHALLENGE_LENGTH_DAYS}`;
         }
@@ -818,6 +825,12 @@ function checkGoldenDay(completedCount) {
 // 14. 90-DAY CALENDAR
 // =====================================================
 
+const CALENDAR_STATUS_LABELS = {
+    green: "Golden day",
+    yellow: "Partial day",
+    red: "Missed day"
+};
+
 function loadCalendar() {
     if (!calendar) return;
     calendar.innerHTML = "";
@@ -834,12 +847,28 @@ function loadCalendar() {
             day.classList.add(status);
         }
 
-        if (i === dayNumber && !isChallengeFinished()) {
-            day.style.border = "3px solid white";
+        const isToday = i === dayNumber && !isChallengeFinished();
+        let label = `Day ${i}`;
+
+        if (status && CALENDAR_STATUS_LABELS[status]) {
+            label += `, ${CALENDAR_STATUS_LABELS[status]}`;
         }
+
+        if (isToday) {
+            day.classList.add("is-today");
+            label += ", current day";
+        }
+
+        // Status must never be conveyed by colour alone.
+        day.setAttribute("role", "listitem");
+        day.setAttribute("aria-label", label);
+        day.title = label;
 
         fragment.appendChild(day);
     }
+
+    calendar.setAttribute("role", "list");
+    calendar.setAttribute("aria-label", "90 day challenge calendar");
 
     calendar.appendChild(fragment);
 }
@@ -884,11 +913,41 @@ function getWeeklyChartData() {
     });
 }
 
+/* Chart palette — mirrors the CSS tokens so canvas matches the theme. */
+const CHART_THEME = {
+    dark: {
+        tick: "#737c87",
+        grid: "rgba(255,255,255,.07)",
+        text: "#f2f5f8",
+        accent: "#7cc0f0",
+        accentSoft: "rgba(124,192,240,.16)",
+        pos: "#46a16b",
+        empty: "#1c2027",
+        themeColor: "#08090b"
+    },
+    light: {
+        tick: "#78828e",
+        grid: "rgba(16,21,28,.10)",
+        text: "#10151c",
+        accent: "#2c7fb8",
+        accentSoft: "rgba(44,127,184,.14)",
+        pos: "#3c8f5d",
+        empty: "#e9edf1",
+        themeColor: "#f4f6f8"
+    }
+};
+
+function getChartTheme() {
+    return isLightMode() ? CHART_THEME.light : CHART_THEME.dark;
+}
+
 function createWeeklyChart() {
     if (!ctx || typeof Chart === "undefined") return;
 
     const existingChart = Chart.getChart(ctx);
     if (existingChart) existingChart.destroy();
+
+    const palette = getChartTheme();
 
     weeklyChart = new Chart(ctx, {
         type: "bar",
@@ -897,8 +956,11 @@ function createWeeklyChart() {
             datasets: [{
                 label: "Tasks Completed",
                 data: getWeeklyChartData(),
-                backgroundColor: "#38bdf8",
-                borderRadius: 8
+                backgroundColor: palette.accentSoft,
+                hoverBackgroundColor: palette.accent,
+                borderColor: palette.accent,
+                borderWidth: 1,
+                borderRadius: 6
             }]
         },
         options: {
@@ -907,9 +969,15 @@ function createWeeklyChart() {
                 legend: { display: false }
             },
             scales: {
+                x: {
+                    ticks: { color: palette.tick },
+                    grid: { display: false }
+                },
                 y: {
                     beginAtZero: true,
-                    max: checkboxes.length || 10
+                    max: checkboxes.length || 10,
+                    ticks: { color: palette.tick, precision: 0 },
+                    grid: { color: palette.grid }
                 }
             }
         }
@@ -932,6 +1000,7 @@ function createPieChart() {
     if (existingChart) existingChart.destroy();
 
     const completed = countCompletedCheckboxes();
+    const palette = getChartTheme();
 
     pieChart = new Chart(pieCtx, {
         type: "doughnut",
@@ -939,7 +1008,7 @@ function createPieChart() {
             labels: ["Completed", "Remaining"],
             datasets: [{
                 data: [completed, checkboxes.length - completed],
-                backgroundColor: [isLightMode() ? "#6b8f5e" : "#22c55e", isLightMode() ? "#e3d2ab" : "#334155"],
+                backgroundColor: [palette.pos, palette.empty],
                 borderWidth: 0
             }]
         },
@@ -949,7 +1018,13 @@ function createPieChart() {
             plugins: {
                 legend: {
                     position: "bottom",
-                    labels: { color: isLightMode() ? "#3a2f25" : "white" }
+                    labels: {
+                        color: palette.text,
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        boxWidth: 8,
+                        padding: 16
+                    }
                 }
             }
         }
@@ -981,7 +1056,7 @@ function updateWelcome() {
     else if (hour >= 17 && hour < 21) greeting = "Good Evening";
     else if (hour >= 21 || hour < 5) greeting = "Good Night";
 
-    welcomeText.textContent = `${greeting}, ${userName} 👋`;
+    welcomeText.textContent = `${greeting}, ${userName}`;
 }
 
 function updateDate() {
@@ -996,41 +1071,41 @@ function initializeTheme() {
     const settingsThemeBtn = document.getElementById("settingsThemeBtn");
 
     function applyThemeColors() {
-        const light = document.body.classList.contains("light");
+        const palette = getChartTheme();
+
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute("content", light ? "#f4ecda" : "#121212");
+        if (meta) meta.setAttribute("content", palette.themeColor);
 
         [weeklyChart, pieChart, weightChart].forEach(ch => {
             if (!ch) return;
-            const tickColor = light ? "#7a6a55" : "#cbd5e1";
-            const gridColor = light ? "rgba(90,68,40,.12)" : "rgba(255,255,255,.10)";
-            const textColor = light ? "#3a2f25" : "white";
+
             if (ch.options.scales) {
                 Object.values(ch.options.scales).forEach(scale => {
-                    if (scale.ticks) scale.ticks.color = tickColor;
-                    if (scale.grid) scale.grid.color = gridColor;
+                    if (scale.ticks) scale.ticks.color = palette.tick;
+                    if (scale.grid) scale.grid.color = palette.grid;
                 });
             }
+
             if (ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels) {
-                ch.options.plugins.legend.labels.color = textColor;
-            }
-            if (ch.data && ch.data.datasets && ch.data.datasets[0] && ch.data.datasets[0].backgroundColor
-                && Array.isArray(ch.data.datasets[0].backgroundColor)
-                && ch.data.datasets[0].backgroundColor.length === 2) {
-                ch.data.datasets[0].backgroundColor[0] = light ? "#6b8f5e" : "#22c55e";
-                ch.data.datasets[0].backgroundColor[1] = light ? "#e3d2ab" : "#334155";
+                ch.options.plugins.legend.labels.color = palette.text;
             }
 
-            // Weekly bar + weight line: use muted gold in light, blue in dark.
-            if (ch.data && ch.data.datasets && ch.data.datasets[0]) {
-                if (typeof ch.data.datasets[0].borderColor === "string" && ch.data.datasets[0].borderColor.indexOf("#") === 0) {
-                    ch.data.datasets[0].borderColor = light ? "#b08a33" : "#38bdf8";
-                    ch.data.datasets[0].backgroundColor = light ? "rgba(176,138,51,0.20)" : "rgba(56,189,248,0.15)";
-                } else if (typeof ch.data.datasets[0].backgroundColor === "string"
-                    && ch.data.datasets[0].backgroundColor.indexOf("#") === 0) {
-                    ch.data.datasets[0].backgroundColor = light ? "#b08a33" : "#38bdf8";
+            const dataset = ch.data && ch.data.datasets && ch.data.datasets[0];
+
+            if (dataset) {
+                // Doughnut: [completed, remaining]
+                if (Array.isArray(dataset.backgroundColor) && dataset.backgroundColor.length === 2) {
+                    dataset.backgroundColor[0] = palette.pos;
+                    dataset.backgroundColor[1] = palette.empty;
+                }
+
+                // Weight line: transparent fill under the stroke.
+                if (dataset.borderColor) {
+                    dataset.borderColor = palette.accent;
+                    dataset.backgroundColor = palette.accentSoft;
                 }
             }
+
             ch.update();
         });
     }
@@ -1039,8 +1114,8 @@ function initializeTheme() {
         const isLight = document.body.classList.contains("light");
 
         const text = isLight
-            ? "☀️ Light Mode"
-            : "🌙 Dark Mode";
+            ? "Light Mode"
+            : "Dark Mode";
 
         if (menuThemeBtn) {
             menuThemeBtn.textContent = text;
@@ -1376,7 +1451,7 @@ function initializeResetButton() {
     if (!resetBtn) return;
 
     resetBtn.addEventListener("click", () => {
-        const confirmReset = confirm("⚠️ This will erase ALL progress, streaks, XP, and calendar data.\n\nAre you sure?");
+        const confirmReset = confirm("This will erase ALL progress, streaks, XP, and calendar data.\n\nAre you sure?");
         if (!confirmReset) return;
 
         const savedName = localStorage.getItem(STORAGE_KEYS.userName);
@@ -1387,7 +1462,7 @@ function initializeResetButton() {
         if (savedName) localStorage.setItem(STORAGE_KEYS.userName, savedName);
         if (savedTheme) localStorage.setItem(STORAGE_KEYS.theme, savedTheme);
 
-        alert("✅ Ace Tracker progress has been reset.");
+        alert("Ace Tracker progress has been reset.");
         location.reload();
     });
 }
@@ -1638,13 +1713,13 @@ function loadTasksIntoCustomizer() {
         editButton.type = "button";
         editButton.className = "edit-task-btn";
         editButton.dataset.index = index;
-        editButton.textContent = "✏️ Edit";
+        editButton.textContent = "Edit";
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.className = "delete-task-btn";
         deleteButton.dataset.index = index;
-        deleteButton.textContent = "🗑️ Delete";
+        deleteButton.textContent = "Delete";
 
         taskRow.appendChild(number);
         taskRow.appendChild(name);
@@ -1864,7 +1939,7 @@ function saveHeight() {
 
     updateBodyStats();
 
-    alert("✅ Height saved successfully.");
+    alert("Height saved successfully.");
 
 }
 
@@ -2229,7 +2304,7 @@ function renderWeightHistory() {
                 "delete-weight-btn";
 
             deleteButton.textContent =
-                "🗑️ Delete";
+                "Delete";
 
 
             deleteButton.addEventListener(
@@ -2321,18 +2396,27 @@ function createWeightChart() {
 
                         data: weights,
 
-                        borderColor: "#38bdf8",
+                        borderColor:
+                            getChartTheme().accent,
 
                         backgroundColor:
-                            "rgba(56, 189, 248, 0.15)",
+                            getChartTheme().accentSoft,
+
+                        pointBackgroundColor:
+                            getChartTheme().accent,
+
+                        pointBorderColor:
+                            getChartTheme().themeColor,
 
                         fill: true,
 
+                        borderWidth: 2,
+
                         tension: 0.35,
 
-                        pointRadius: 5,
+                        pointRadius: 4,
 
-                        pointHoverRadius: 7
+                        pointHoverRadius: 6
 
                     }]
 
@@ -2744,7 +2828,7 @@ function renderNotificationTaskList() {
             "configure-task-notification";
 
         configureButton.textContent =
-            "⚙️ Edit";
+            "Edit";
 
         configureButton.addEventListener(
             "click",
@@ -3259,7 +3343,7 @@ function openTaskNotificationEditor(index) {
         document.createElement("label");
 
     completedLabel.textContent =
-        "🎯 Stop when task is completed";
+        "Stop when task is completed";
 
 
     const completedCheckbox =
@@ -3366,7 +3450,7 @@ function openTaskNotificationEditor(index) {
         document.createElement("label");
 
     customMessageLabel.textContent =
-        "✏️ Custom message";
+        "Custom message";
 
 
     const customMessage =
@@ -4199,7 +4283,7 @@ async function sendTestPushNotification() {
         const subscribed = await subscribeToPushNotifications();
         if (!subscribed) {
             if (permissionStatus) {
-                permissionStatus.textContent = "⚠️ Push setup could not be completed on this device.";
+                permissionStatus.textContent = "Push setup could not be completed on this device.";
             }
             return;
         }
@@ -4212,14 +4296,14 @@ async function sendTestPushNotification() {
         }
 
         if (permissionStatus) {
-            permissionStatus.textContent = "✅ Test push sent. Your system notification should appear shortly.";
+            permissionStatus.textContent = "Test push sent. Your system notification should appear shortly.";
         }
 
     } catch (error) {
 
         console.error("❌ Test push failed:", error);
         if (permissionStatus) {
-            permissionStatus.textContent = "⚠️ Test failed. Check your connection and try again.";
+            permissionStatus.textContent = "Test failed. Check your connection and try again.";
         }
 
     }
@@ -4322,12 +4406,12 @@ async function requestNotificationPermission() {
                 if (pushRegistered) {
                     await syncAllTaskRemindersToServer();
                     showAceNotification(
-                        "🚀 Ace Tracker",
+                        "Ace Tracker",
                         "Background notifications are now enabled!"
                     );
                 } else {
                     showAceNotification(
-                        "⚠️ Ace Tracker",
+                        "Ace Tracker",
                         "Browser notifications are enabled, but background push setup failed."
                     );
                 }
@@ -4371,8 +4455,8 @@ async function showAceNotification(title, message, tag) {
 
             await registration.showNotification(title, {
                 body: message,
-                icon: "icon.png",
-                badge: "icon.png",
+                icon: "assets/av-logo.png",
+                badge: "assets/av-logo.png",
                 tag: tag || "ace-tracker-reminder",
                 renotify: true,
                 data: { url: "/" }
@@ -4390,8 +4474,8 @@ async function showAceNotification(title, message, tag) {
     try {
         new Notification(title, {
             body: message,
-            icon: "icon.png",
-            badge: "icon.png"
+            icon: "assets/av-logo.png",
+            badge: "assets/av-logo.png"
         });
     } catch (error) {
         console.error(
@@ -4525,7 +4609,7 @@ function saveNotificationPreferences() {
     updateNotificationUI();
 
     alert(
-        "✅ Notification settings saved!"
+        "Notification settings saved!"
     );
 
 }
@@ -4542,7 +4626,7 @@ function updatePermissionStatus() {
     if (!("Notification" in window)) {
 
         permissionStatus.textContent =
-            "❌ Your browser does not support notifications.";
+            "Your browser does not support notifications.";
 
         return;
 
@@ -4551,11 +4635,11 @@ function updatePermissionStatus() {
     if (Notification.permission === "granted") {
 
         permissionStatus.textContent =
-            "✅ Browser notifications are enabled.";
+            "Browser notifications are enabled.";
 
         if (enableNotificationsBtn) {
             enableNotificationsBtn.textContent =
-                "✅ Notifications Enabled";
+                "Notifications Enabled";
         }
 
     } else if (Notification.permission === "denied") {
@@ -4565,7 +4649,7 @@ function updatePermissionStatus() {
 
         if (enableNotificationsBtn) {
             enableNotificationsBtn.textContent =
-                "⚠️ Notifications Blocked";
+                "Notifications Blocked";
         }
 
     } else {
@@ -5295,7 +5379,7 @@ function checkGoldenDayNotification() {
 
 
     showAceNotification(
-        "🏆 Golden Day!",
+        "Golden Day!",
         "You've completed every task today. Amazing work!",
         "ace-golden-day"
     );
@@ -5460,6 +5544,7 @@ function startSmartNotifications() {
     const overlay = document.getElementById("appMenuOverlay");
     const sideMenu = document.getElementById("appSideMenu");
     const navItems = document.querySelectorAll(".app-nav-item");
+    const tabItems = document.querySelectorAll(".app-tab");
 
     if (!menuButton || !closeButton || !overlay || !sideMenu) {
         return;
@@ -5485,6 +5570,19 @@ function startSmartNotifications() {
         sideMenu.setAttribute("aria-hidden", "false");
     }
 
+    function syncItems(items, page) {
+        items.forEach(item => {
+            const isActive = item.dataset.page === page;
+            item.classList.toggle("active", isActive);
+
+            if (isActive) {
+                item.setAttribute("aria-current", "page");
+            } else {
+                item.removeAttribute("aria-current");
+            }
+        });
+    }
+
     function showPage(page) {
         if (!pageClasses.includes(`page-${page}`)) {
             page = "dashboard";
@@ -5496,12 +5594,9 @@ function startSmartNotifications() {
 
         document.body.classList.add(`page-${page}`);
 
-        navItems.forEach(item => {
-            item.classList.toggle(
-                "active",
-                item.dataset.page === page
-            );
-        });
+        // Keep the drawer nav and the mobile tab bar in sync.
+        syncItems(navItems, page);
+        syncItems(tabItems, page);
 
         // Always start the selected view at the top.
         window.scrollTo({
@@ -5524,6 +5619,12 @@ function startSmartNotifications() {
     overlay.addEventListener("click", closeMenu);
 
     navItems.forEach(item => {
+        item.addEventListener("click", () => {
+            showPage(item.dataset.page);
+        });
+    });
+
+    tabItems.forEach(item => {
         item.addEventListener("click", () => {
             showPage(item.dataset.page);
         });
