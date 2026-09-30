@@ -116,42 +116,135 @@
     --z-login: 100100;
 }
 
-body.light {
-    --bg: #f4f6f8;
-    --bg-tint-a: #ffffff;
-    --bg-tint-b: #eef1f5;
-    --surface: #ffffff;
-    --surface-2: #f7f9fb;
-    --surface-3: #eef1f5;
-    --surface-sunken: #e9edf1;
-    --overlay: rgba(24, 28, 34, .42);
+/* ------------------------------------------------------------
+   THEME 2 - FOREST (original Ace Tracker dark, recovered from 5aaa3f8)
+   Slate canvas, sky-blue primary accent, emerald success, coral danger.
+   ------------------------------------------------------------ */
 
-    --border: rgba(16, 22, 30, .09);
-    --border-mid: rgba(16, 22, 30, .14);
-    --border-strong: rgba(16, 22, 30, .22);
+[data-theme="forest"] {
+    --bg: #0f172a;
+    --bg-tint-a: #111c33;
+    --bg-tint-b: #020617;
+    --surface: rgba(30, 41, 59, .78);
+    --surface-2: #1e293b;
+    --surface-3: #334155;
+    --surface-sunken: #0f172a;
+    --overlay: rgba(2, 6, 23, .74);
 
-    --text: #10151c;
-    --text-2: #4d5763;
-    --text-3: #78828e;
+    --border: rgba(255, 255, 255, .08);
+    --border-mid: rgba(255, 255, 255, .14);
+    --border-strong: rgba(255, 255, 255, .22);
 
-    --accent: #2c7fb8;
-    --accent-strong: #1b6b9f;
-    --accent-dim: rgba(44, 127, 184, .10);
-    --accent-line: rgba(44, 127, 184, .30);
-    --on-accent: #ffffff;
+    --text: #ffffff;
+    --text-2: #cbd5e1;
+    --text-3: #94a3b8;
 
-    --pos: #2f8a58;
-    --pos-dim: rgba(47, 138, 88, .10);
-    --pos-line: rgba(47, 138, 88, .30);
-    --warn: #a97c17;
-    --warn-dim: rgba(169, 124, 23, .12);
-    --neg: #b8452f;
-    --neg-dim: rgba(184, 69, 47, .10);
+    --accent: #38bdf8;
+    --accent-strong: #7dd3fc;
+    --accent-dim: rgba(56, 189, 248, .14);
+    --accent-line: rgba(56, 189, 248, .34);
+    --on-accent: #06283a;
 
-    --sh-1: 0 1px 2px rgba(16, 22, 30, .06);
-    --sh-2: 0 4px 14px rgba(16, 22, 30, .07);
-    --sh-3: 0 16px 40px rgba(16, 22, 30, .14);
-    --sh-accent: 0 6px 18px rgba(44, 127, 184, .18);
+    --pos: #22c55e;
+    --pos-dim: rgba(34, 197, 94, .14);
+    --pos-line: rgba(34, 197, 94, .38);
+    --warn: #eab308;
+    --warn-dim: rgba(234, 179, 8, .14);
+    --neg: #ef4444;
+    --neg-dim: rgba(239, 68, 68, .14);
+
+    --sh-1: 0 1px 2px rgba(2, 6, 23, .34);
+    --sh-2: 0 6px 18px rgba(0, 0, 0, .30);
+    --sh-3: 0 18px 44px rgba(0, 0, 0, .40);
+    --sh-accent: 0 6px 18px rgba(56, 189, 248, .26);
+}
+
+[data-theme="light"] {
+    --bg: #f7f0de;
+    --bg-tint-a: #fbf4e4;
+    --bg-tint-b: #f1e8d2;
+    --surface: #fffaf0;
+    --surface-2: #fbf3e1;
+    --surface-3: #eedfc0;
+    --surface-sunken: #f2e8d0;
+    --overlay: rgba(58, 47, 37, .42);
+
+    --border: rgba(150, 118, 60, .22);
+    --border-mid: rgba(150, 118, 60, .32);
+    --border-strong: rgba(150, 118, 60, .45);
+
+    --text: #3a2f25;
+    --text-2: #6b5c46;
+    --text-3: #8a7a61;
+
+    --accent: #b0882f;
+    --accent-strong: #8a6d2f;
+    --accent-dim: rgba(176, 136, 47, .12);
+    --accent-line: rgba(176, 136, 47, .34);
+    --on-accent: #fff9ec;
+
+    --pos: #6b8f5e;
+    --pos-dim: rgba(107, 143, 94, .14);
+    --pos-line: rgba(107, 143, 94, .36);
+    --warn: #c99a3b;
+    --warn-dim: rgba(201, 154, 59, .14);
+    --neg: #a8553f;
+    --neg-dim: rgba(168, 85, 63, .14);
+
+    --sh-1: 0 1px 2px rgba(96, 66, 32, .08);
+    --sh-2: 0 4px 14px rgba(96, 66, 32, .11);
+    --sh-3: 0 16px 40px rgba(96, 66, 32, .16);
+    --sh-accent: 0 6px 18px rgba(176, 136, 47, .22);
+}
+
+
+/* ------------------------------------------------------------
+   THEME BACKDROPS
+   Dark keeps its flat near-black canvas (see :root / body).
+   Forest and Light restore the original gradient backdrops.
+   The glow layers are painted behind content at z-index -1, which
+   relies on `body` propagating its background to the canvas - so
+   `html` must stay background-less for these to stay visible.
+   ------------------------------------------------------------ */
+
+[data-theme="forest"] body {
+    background:
+        radial-gradient(circle at top left, #2563eb, #0f172a 45%),
+        radial-gradient(circle at bottom right, #0f766e, #020617);
+}
+
+/* Original Forest background glow, recovered from 5aaa3f8 */
+[data-theme="forest"] body::before,
+[data-theme="forest"] body::after {
+    content: "";
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    filter: blur(180px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+[data-theme="forest"] body::before {
+    background: #38bdf8;
+    opacity: .18;
+    top: -120px;
+    left: -120px;
+}
+
+[data-theme="forest"] body::after {
+    background: #14b8a6;
+    opacity: .35;
+    bottom: -120px;
+    right: -120px;
+}
+
+[data-theme="light"] body {
+    background:
+        radial-gradient(circle at 14% -12%, #f6e9c8, transparent 46%),
+        radial-gradient(circle at 112% 112%, #eedeba, transparent 42%),
+        linear-gradient(#f7f0de, #f1e8d2);
 }
 
 
@@ -647,11 +740,6 @@ select {
     background-size: 5px 5px, 5px 5px;
     background-repeat: no-repeat;
     padding-right: 38px;
-}
-
-body.light select {
-    background-image: linear-gradient(45deg, transparent 50%, var(--text-3) 50%),
-        linear-gradient(135deg, var(--text-3) 50%, transparent 50%);
 }
 
 
@@ -1951,6 +2039,99 @@ body.light select {
     transform: scale(.97);
 }
 
+/* --- Customizer task rows ---------------------------------
+   The row used to be a plain block with inline children, so the
+   index, the name and the two buttons all sat at different heights
+   and the index was squeezed to the width of its own digits. It is
+   laid out properly here, and the same row becomes the name editor
+   when .is-editing is set. */
+
+.customizer-task-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+}
+
+.customizer-task-row.is-editing {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding: var(--sp-4);
+}
+
+.customizer-task-number {
+    flex: 0 0 auto;
+    min-width: 1.5em;
+    color: var(--text-3);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.customizer-task-name {
+    flex: 1 1 0;
+    min-width: 0;
+    color: var(--text);
+    font-size: var(--fs-md);
+    overflow-wrap: anywhere;
+}
+
+.customizer-task-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--sp-2);
+    margin-left: auto;
+}
+
+.customizer-task-editor {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+}
+
+.customizer-task-input {
+    flex: 1 1 12rem;
+    min-width: 0;
+    min-height: var(--tap);
+    padding: var(--sp-3) var(--sp-4);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--r-md);
+    background: var(--surface-sunken);
+    color: var(--text);
+    font: inherit;
+    font-size: var(--fs-md);
+    outline: none;
+    transition: border-color var(--t) ease, box-shadow var(--t) ease;
+}
+
+.customizer-task-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.customizer-task-editor-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--sp-2);
+}
+
+.save-task-name-btn,
+.cancel-task-name-btn {
+    flex: 0 0 auto;
+    padding: 0 var(--sp-4);
+}
+
+.customizer-task-error {
+    margin: 0;
+    color: var(--neg);
+    font-size: var(--fs-sm);
+    line-height: 1.4;
+}
+
 .notification-frequency-settings {
     display: flex;
     flex-direction: column;
@@ -2159,6 +2340,67 @@ body.light select {
     transform: scale(.97);
 }
 
+/* ---- Theme selector ------------------------------------------------
+   Reuses the existing Appearance card. A compact three-option segmented
+   control built from real radio inputs, so keyboard and screen-reader
+   behaviour is native rather than re-implemented with ARIA.
+   ------------------------------------------------------------------- */
+
+.theme-switch {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: var(--sp-2);
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--surface-sunken);
+}
+
+.theme-option {
+    position: relative;
+    display: inline-flex;
+}
+
+.theme-option input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.theme-option span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 var(--sp-3);
+    border-radius: calc(var(--r-sm) - 3px);
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color var(--t) ease, color var(--t) ease;
+}
+
+.theme-option input:checked + span {
+    background: var(--surface-3);
+    color: var(--text);
+    box-shadow: var(--sh-1);
+}
+
+.theme-option input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 .danger-card {
     border-color: rgba(196, 85, 63, .28);
 }
@@ -2176,16 +2418,186 @@ body.light select {
     background: var(--neg-dim);
 }
 
-/* --- AV brand banner (rendered after the footer content) ---
-   The source is 1983x793 (2.5:1). Capping width instead of height keeps the
-   whole banner visible; a max-height + object-fit:cover would crop it. */
+/* ==========================================================
+   AV SIGN-OFF
+   The banner closes the dashboard as part of its visual system
+   instead of an image sitting underneath the app.
+
+   The artwork is a 1983x793 bitmap (2.5:1): an opaque black plate
+   carrying two diagonal light streaks, a central AV monogram and
+   the "FROM IDEA TO REALITY" tagline. The same file is served in
+   all three themes - never cropped, never scaled off-ratio, never
+   recoloured or re-encoded.
+
+   What stops it reading as a pasted card is the absence of any
+   frame: no border, no radius, no shadow, no plate fill. The black
+   plate is instead feathered on both axes (two-axis alpha mask,
+   intersect) so it dissolves into the page rather than ending on a
+   hard rectangular edge, and it is lit from behind by a low accent
+   wash drawn from the active theme's own palette tokens. A
+   centre-out hairline supplies the transition from the dashboard
+   content above, and the credit sits directly beneath as the
+   closing signature.
+
+   Everything here is deliberately static at rest. The wash does not
+   drift and the artwork does not breathe - both were slow ambient
+   animations, and on a footer that is on screen every single visit
+   they read as flicker rather than as polish.
+
+   Measured ink bounds of the source bitmap, which is what sets the
+   feather widths: the monogram and tagline occupy the central
+   30%-73% and stay fully opaque, while the diagonal streaks - which
+   do reach the canvas edges - are the only thing that softens at
+   their extremities. That reads as the streaks emerging from the
+   surface rather than as a clipped image.
+   ========================================================== */
+
+.av-signoff {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* The footer's own padding-top already opens the block, so this used to
+       stack a second 24px margin and a third 24px padding on top of it -
+       80px of dead space above the artwork at every width, which read as an
+       empty band on a phone. These two collapse to 0 on narrow screens and
+       resolve to the previous 24px by ~960px, so desktop is unchanged. */
+    margin-top: clamp(0px, 2.5vw, var(--sp-6));
+    padding-top: clamp(0px, 2.5vw, var(--sp-6));
+    gap: clamp(var(--sp-3), 3vw, var(--sp-5));
+    /* The wash is wider than this box on purpose, so it must not extend the
+       page's scrollable width. clip trims it without creating a scroll
+       container; the clip margin still lets the halo bleed past the artwork. */
+    overflow-x: clip;
+    overflow-clip-margin: 80px;
+    animation: avSignoffIn 620ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+/* Ambient wash: a single radial-gradient layer - no filter, no blur stack.
+   Static at rest, with only a modest hover lift; the previous version drifted
+   and scaled on a 26s loop, which is a lot of perpetual motion for a footer
+   that is visible on every visit. */
+.av-signoff::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 50%;
+    /* Deliberately a wide, short ellipse and not a circle. A circle big
+       enough to reach past the artwork's corners is also ~340px tall, so
+       it threw a halo up to 120px above the banner - the single biggest
+       reason it read as a floating orb. The ellipse is sized to the
+       artwork's own proportions, so it can bleed generously to the sides
+       while staying inside the banner's vertical band. */
+    width: min(760px, 170%);
+    height: min(300px, 72%);
+    transform: translate3d(-50%, -50%, 0);
+    /* ellipse + closest-side makes the gradient radii follow the box, so
+       the falloff reaches zero exactly at the box edge on both axes. */
+    background: radial-gradient(closest-side ellipse,
+            var(--accent-line) 0%,
+            var(--accent-dim) 46%,
+            transparent 100%);
+    opacity: .16;
+    pointer-events: none;
+    transition: opacity var(--t-slow) ease;
+}
+
+.av-signoff:hover::before {
+    opacity: .22;
+}
+
+/* The transition out of the dashboard above: a hairline that fades out at
+   both ends, so it never closes into a box. */
+.av-signoff-rule {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(560px, 100%);
+    height: 1px;
+    transform: translate3d(-50%, 0, 0);
+    background: linear-gradient(to right,
+            transparent,
+            var(--border-mid) 24%,
+            var(--border-strong) 50%,
+            var(--border-mid) 76%,
+            transparent);
+    opacity: .9;
+    pointer-events: none;
+    animation: avSignoffRule 900ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
 .brand-banner {
     display: block;
+    /* Fluid width strategy. The banner takes the available content width, then
+       two caps apply in order:
+         - 88% keeps it off the very edge of a phone, so it reads as a
+           composed mark rather than a full-bleed image dropped in a strip;
+         - 550px is the existing desktop ceiling, so nothing grows there.
+       At 360px that resolves to ~289px wide (80% of the viewport) and by
+       ~780px it has already reached the 550px cap. Height is never set, so it
+       follows from aspect-ratio and the footer reflows around it. */
     width: 100%;
-    max-width: 550px;
+    max-width: min(550px, 88%);
     height: auto;
-    margin: var(--sp-8) auto 0;
-    border-radius: var(--r-md);
+    margin: 0;
+    /* Reserves the exact 2.5006:1 box before the bitmap decodes, so there is
+       no layout shift and no inherited height can ever squash it. */
+    aspect-ratio: 1983 / 793;
+    /* Belt and braces alongside the reserved aspect-ratio: even if a font or
+       inherited rule ever constrained the box, contain letterboxes the bitmap
+       instead of stretching it. */
+    object-fit: contain;
+
+    /* Feather the plate into the page on both axes. Standard mask-composite
+       first, prefixed value for older WebKit. The ramps are wide enough that
+       the plate has no readable corner anywhere along its border, but stop
+       short of the brand box (central 30%-73%) so the monogram and tagline
+       stay at full opacity. */
+    --av-banner-fade-x: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+    --av-banner-fade-y: linear-gradient(to bottom, transparent 0, #000 20%, #000 82%, transparent 100%);
+    -webkit-mask-image: var(--av-banner-fade-x), var(--av-banner-fade-y);
+    mask-image: var(--av-banner-fade-x), var(--av-banner-fade-y);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+
+    /* Fully lit and static. The artwork used to breathe between .93 and 1
+       over 22s, which read as a slow flicker rather than a signature. */
+    opacity: .96;
+}
+
+/* Light: inverting turns the black plate into dark ink on the cream page.
+   The feather dissolves against a light background exactly as it does
+   against a dark one, so Light needs no mask tuning of its own. Forest
+   needs none either - a black plate already sits on a near-black canvas -
+   and the wash picks up each theme's own accent either way. */
+[data-theme="light"] .brand-banner {
+    filter: invert(1);
+}
+
+@keyframes avSignoffIn {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 10px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes avSignoffRule {
+    from {
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scaleX(.15);
+    }
+
+    to {
+        opacity: .9;
+        transform: translate3d(-50%, 0, 0) scaleX(1);
+    }
 }
 
 
@@ -2557,8 +2969,17 @@ body.page-settings footer {
    ========================================================== */
 
 footer {
-    margin-top: var(--sp-12);
-    padding: var(--sp-8) var(--gutter);
+    /* Vertical rhythm is fluid rather than stepped. On a phone the footer is a
+       compact closing signature, so it pulls in tight; the value opens back up
+       to exactly the previous desktop spacing by ~1000px. Nothing here needs a
+       breakpoint - the two ends are just the clamp bounds. */
+    margin-top: clamp(24px, 6vw, var(--sp-12));
+    padding-top: clamp(20px, 4vw, var(--sp-8));
+    padding-bottom: clamp(28px, 6vw, var(--sp-8));
+    /* Landscape on a notched phone would otherwise push the artwork under the
+       rounded edge, so each side takes whichever inset is larger. */
+    padding-left: max(var(--gutter), var(--safe-l));
+    padding-right: max(var(--gutter), var(--safe-r));
     border-top: 1px solid var(--border);
     background: var(--bg-tint-a);
     text-align: center;
@@ -2575,19 +2996,63 @@ footer {
 .footer-logo {
     width: 22px;
     height: 22px;
-    padding: 2px;
     flex-shrink: 0;
     object-fit: contain;
-    border-radius: var(--r-xs);
-    background: var(--surface);
-    border: 1px solid var(--border);
+    /* The mark sits inside the middle ~58% of a 1254x1254 opaque black plate,
+       so the plate can be feathered away exactly like the banner instead of
+       being kept alive by its own bordered chip. */
+    -webkit-mask-image: radial-gradient(closest-side, #000 76%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 76%, transparent 100%);
 }
 
 .footer-text {
     margin: 0;
     color: var(--text-3);
-    font-size: var(--fs-xs);
+    /* Larger on a phone, easing back to the previous 12px by ~1000px so
+       desktop renders identically. max() rather than clamp() because this
+       value has to shrink as the viewport grows, which clamp cannot express:
+       its bounds are ordered low-to-high. */
+    font-size: max(12px, 13px - .1vw);
     line-height: 1.5;
+}
+
+/* Light theme only. The recovered warm palette's --text-3 (#8a7a61) measures
+   ~3.8:1 against the cream footer, just under WCAG AA for body text, and the
+   copyright line is the one place that muted token carries a full sentence
+   rather than a label. Promote it to the secondary text token for this one
+   element instead of retuning --text-3, which ~40 rules across all three
+   themes depend on. Dark and Forest keep the existing muted footer tone. */
+[data-theme="light"] .footer-text {
+    color: var(--text-2);
+}
+
+/* Author credit: subordinate to the copyright line above it - never larger or
+   bolder - but still a legible attribution. It sits on the secondary text
+   token with no extra opacity, because stacking a muted token under a reduced
+   alpha drops it below WCAG AA on the light palette.
+
+   The same treatment as .footer-text: a little larger on a phone (11px was
+   below comfortable reading size at that scale) easing back to 11px from
+   ~1365px up, so the desktop footer renders byte-identically to before. */
+.footer-credit {
+    display: block;
+    margin-top: 2px;
+    color: var(--text-2);
+    font-size: max(11px, 12.5px - .11vw);
+    letter-spacing: .01em;
+}
+
+/* Every AV mark is an opaque black plate with near-white lettering
+   (measured at 0% coloured pixels). Dark and Forest sit on dark surfaces,
+   so the plate is invisible there and no treatment is applied. Light is the
+   only theme that needs it, and inverting keeps the mark fully legible
+   without touching the artwork itself. */
+[data-theme="light"] .header-logo,
+[data-theme="light"] .app-bar-brand img,
+[data-theme="light"] .app-menu-brand-logo,
+[data-theme="light"] .login-logo,
+[data-theme="light"] .footer-logo {
+    filter: invert(1);
 }
 
 .export-section {
@@ -2827,6 +3292,15 @@ footer {
 
 @media (min-width: 701px) {
     /* Desktop/tablet keeps the drawer as the single nav. */
+
+    /* Below 700px --safe-b is already applied by body's tab-bar padding, so
+       repeating it on the footer there would stack the home-indicator inset
+       twice. From 701px up there is no fixed tab bar, the footer is the last
+       thing on screen, and it owns the bottom inset itself. */
+    footer {
+        padding-bottom: calc(var(--sp-8) + var(--safe-b));
+    }
+
     .app-tab-bar {
         display: none;
     }
@@ -2960,5 +3434,34 @@ footer {
 
     .app-tab.active::before {
         display: none;
+    }
+
+    /* The AV sign-off drops every decorative animation but keeps the exact
+       same composition: the wash, the hairline and the artwork all resolve to
+       their resting state, which is the fully-lit end of each animation. */
+    .av-signoff,
+    .av-signoff::before,
+    .av-signoff-rule,
+    .brand-banner {
+        animation: none !important;
+    }
+
+    .av-signoff {
+        opacity: 1;
+        transform: none;
+    }
+
+    .av-signoff::before {
+        opacity: .16;
+        transform: translate3d(-50%, -50%, 0);
+    }
+
+    .av-signoff-rule {
+        opacity: .9;
+        transform: translate3d(-50%, 0, 0);
+    }
+
+    .brand-banner {
+        opacity: 1;
     }
 }

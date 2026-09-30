@@ -913,6 +913,29 @@ function getWeeklyChartData() {
     });
 }
 
+/* Theme state ---------------------------------------------------------------
+   Three explicit, user-selectable themes. The canonical value lives on
+   <html data-theme>, which is what the CSS token blocks key off, and is
+   mirrored into localStorage under the pre-existing STORAGE_KEYS.theme key so
+   that users of the old two-state build keep their saved preference.
+   "dark" / "light" are still valid stored values; only the binary model is
+   gone.
+   ------------------------------------------------------------------------- */
+
+const THEMES = ["dark", "forest", "light"];
+const DEFAULT_THEME = "dark";
+
+/* Accepts anything ever written to storage and returns a known theme.
+   Legacy "dark" / "light" pass through unchanged; "forest" is new; null,
+   undefined, empty string and unknown junk all fall back to Dark. */
+function normalizeTheme(value) {
+    return THEMES.indexOf(value) !== -1 ? value : DEFAULT_THEME;
+}
+
+function getTheme() {
+    return normalizeTheme(document.documentElement.getAttribute("data-theme"));
+}
+
 /* Chart palette — mirrors the CSS tokens so canvas matches the theme. */
 const CHART_THEME = {
     dark: {
@@ -925,20 +948,30 @@ const CHART_THEME = {
         empty: "#1c2027",
         themeColor: "#08090b"
     },
+    forest: {
+        tick: "#94a3b8",
+        grid: "rgba(255,255,255,.08)",
+        text: "#ffffff",
+        accent: "#38bdf8",
+        accentSoft: "rgba(56,189,248,.18)",
+        pos: "#22c55e",
+        empty: "#334155",
+        themeColor: "#0f172a"
+    },
     light: {
-        tick: "#78828e",
-        grid: "rgba(16,21,28,.10)",
-        text: "#10151c",
-        accent: "#2c7fb8",
-        accentSoft: "rgba(44,127,184,.14)",
-        pos: "#3c8f5d",
-        empty: "#e9edf1",
-        themeColor: "#f4f6f8"
+        tick: "#8a7a61",
+        grid: "rgba(96,66,32,.12)",
+        text: "#3a2f25",
+        accent: "#b0882f",
+        accentSoft: "rgba(176,136,47,.16)",
+        pos: "#6b8f5e",
+        empty: "#eedfc0",
+        themeColor: "#f7f0de"
     }
 };
 
 function getChartTheme() {
-    return isLightMode() ? CHART_THEME.light : CHART_THEME.dark;
+    return CHART_THEME[getTheme()];
 }
 
 function createWeeklyChart() {
@@ -1068,13 +1101,21 @@ function updateDate() {
 function initializeTheme() {
 
     const menuThemeBtn = document.getElementById("menuThemeBtn");
-    const settingsThemeBtn = document.getElementById("settingsThemeBtn");
+    const themeRadios = Array.from(document.querySelectorAll('.theme-switch input[name="aceTheme"]'));
 
     function applyThemeColors() {
         const palette = getChartTheme();
 
         const meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute("content", palette.themeColor);
+
+        /* Keeps native widgets (select popups, scrollbars, form controls)
+           matching the active theme. Dark and Forest are both dark schemes,
+           Light is the only light one. */
+        const scheme = document.querySelector('meta[name="color-scheme"]');
+        if (scheme) {
+            scheme.setAttribute("content", getTheme() === "light" ? "light" : "dark");
+        }
 
         [weeklyChart, pieChart, weightChart].forEach(ch => {
             if (!ch) return;
@@ -1110,71 +1151,72 @@ function initializeTheme() {
         });
     }
 
+    /* Reflect the active theme in every theme control. The settings card uses
+       a radio group, so only the checked state matters there; the drawer keeps
+       a single button that cycles Dark -> Forest -> Light. */
     function updateThemeButtons() {
-        const isLight = document.body.classList.contains("light");
-
-        const text = isLight
-            ? "Light Mode"
-            : "Dark Mode";
+        const theme = getTheme();
+        const label = theme.charAt(0).toUpperCase() + theme.slice(1) + " Mode";
 
         if (menuThemeBtn) {
-            menuThemeBtn.textContent = text;
+            menuThemeBtn.textContent = label;
         }
 
-        if (settingsThemeBtn) {
-            settingsThemeBtn.textContent = text;
+        themeRadios.forEach(radio => {
+            radio.checked = radio.value === theme;
+        });
+    }
+
+    /* Single entry point for changing theme: writes the attribute the CSS
+       keys off, persists it, then syncs controls and charts. */
+    function setTheme(theme, { persist = true } = {}) {
+        const next = normalizeTheme(theme);
+
+        document.documentElement.setAttribute("data-theme", next);
+
+        if (persist) {
+            try {
+                localStorage.setItem(STORAGE_KEYS.theme, next);
+            } catch (e) { /* storage unavailable - theme still applies */ }
         }
+
+        updateThemeButtons();
+        applyThemeColors();
     }
 
-    // Load saved theme
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
+    /* Adopt whatever is already on <html> (set pre-paint by the inline
+       bootstrap) and reconcile it with storage. A legacy "light"/"dark"
+       value is migrated in place; anything unrecognised is normalised. */
+    const current = getTheme();
 
-    if (savedTheme === "light") {
-        document.body.classList.add("light");
-    } else {
-        document.body.classList.remove("light");
-    }
+    try {
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
+        if (normalizeTheme(savedTheme) !== current) {
+            setTheme(savedTheme, { persist: false });
+        } else if (savedTheme !== current) {
+            localStorage.setItem(STORAGE_KEYS.theme, current);
+        }
+    } catch (e) { /* storage unavailable */ }
 
     updateThemeButtons();
     applyThemeColors();
 
-    // Menu theme button
+    // Drawer button: cycle through the three themes in order.
     if (menuThemeBtn) {
         menuThemeBtn.addEventListener("click", () => {
-
-            const isLight =
-                document.body.classList.toggle("light");
-
-            localStorage.setItem(
-                STORAGE_KEYS.theme,
-                isLight ? "light" : "dark"
-            );
-
-            updateThemeButtons();
-            applyThemeColors();
+            const next = THEMES[(THEMES.indexOf(getTheme()) + 1) % THEMES.length];
+            setTheme(next);
         });
     }
 
-    // Settings theme button
-    if (settingsThemeBtn) {
-        settingsThemeBtn.addEventListener("click", () => {
-
-            const isLight =
-                document.body.classList.toggle("light");
-
-            localStorage.setItem(
-                STORAGE_KEYS.theme,
-                isLight ? "light" : "dark"
-            );
-
-            updateThemeButtons();
-            applyThemeColors();
+    // Settings card: one radio per theme.
+    themeRadios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            if (radio.checked) {
+                setTheme(radio.value);
+            }
         });
-    }
-}
-
-function isLightMode() {
-    return document.body.classList.contains("light");
+    });
 }
 
 let quoteTimer = null;
@@ -1455,12 +1497,14 @@ function initializeResetButton() {
         if (!confirmReset) return;
 
         const savedName = localStorage.getItem(STORAGE_KEYS.userName);
-        const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
+        // Normalised on the way out, so a legacy stored value is upgraded to
+        // the current three-theme vocabulary rather than being restored as-is.
+        const savedTheme = normalizeTheme(localStorage.getItem(STORAGE_KEYS.theme));
 
         localStorage.clear();
 
         if (savedName) localStorage.setItem(STORAGE_KEYS.userName, savedName);
-        if (savedTheme) localStorage.setItem(STORAGE_KEYS.theme, savedTheme);
+        localStorage.setItem(STORAGE_KEYS.theme, savedTheme);
 
         alert("Ace Tracker progress has been reset.");
         location.reload();
@@ -1525,59 +1569,10 @@ if (closeTaskCustomizer && taskCustomizerPanel) {
     });
 
 }
-
 // =====================================================
-// TASK CUSTOMIZER - EDIT TASK
+// TASK CUSTOMIZER - OPEN CUSTOMIZER
 // =====================================================
 
-document.addEventListener("click", (event) => {
-
-    const editButton = event.target.closest(".edit-task-btn");
-
-    if (!editButton) return;
-
-    const index = Number(editButton.dataset.index);
-
-    const tasks = document.querySelectorAll(".task");
-    const task = tasks[index];
-
-    if (!task) return;
-
-    const taskSpan = task.querySelector("span");
-
-    if (!taskSpan) return;
-
-    const currentName = taskSpan.textContent;
-
-    const newName = prompt(
-        "Edit task name:",
-        currentName
-    );
-
-    // Cancel pressed
-    if (newName === null) return;
-
-    const trimmedName = newName.trim();
-
-    // Don't allow an empty task
-    if (!trimmedName) {
-        alert("Task name cannot be empty.");
-        return;
-    }
-
-    // Update dashboard task
-    taskSpan.textContent = trimmedName;
-
-    // Save custom name
-    localStorage.setItem(
-        `task-name-${index}`,
-        trimmedName
-    );
-
-    // Refresh customizer
-    loadTasksIntoCustomizer();
-
-});
 // Load the tasks whenever the Customizer button is clicked
 if (taskCustomizerBtn) {
 
@@ -1698,8 +1693,42 @@ function loadTasksIntoCustomizer() {
 
     taskNames.forEach((taskText, index) => {
 
-        const taskRow = document.createElement("div");
-        taskRow.className = "customizer-task-row";
+        customizerTaskList.appendChild(
+            buildCustomizerTaskRow(index, taskText)
+        );
+    });
+}
+
+// Which row, if any, currently has its name editor open. Held in module
+// scope rather than in the DOM so a full re-render can restore the same
+// state. null means every row is showing its read view.
+let editingTaskIndex = null;
+
+function buildCustomizerTaskRow(index, taskText) {
+
+    const taskRow = document.createElement("div");
+
+    taskRow.className = "customizer-task-row";
+
+    taskRow.dataset.index = index;
+
+    renderCustomizerTaskRow(taskRow, index, taskText);
+
+    return taskRow;
+}
+
+// Renders one row in whichever of its two states it is in: the read view, or
+// an editor prefilled with the current name. Kept as a single function so
+// closing an editor can never leave a half-updated row behind.
+function renderCustomizerTaskRow(taskRow, index, taskText) {
+
+    const isEditing = editingTaskIndex === index;
+
+    taskRow.classList.toggle("is-editing", isEditing);
+
+    taskRow.innerHTML = "";
+
+    if (!isEditing) {
 
         const number = document.createElement("span");
         number.className = "customizer-task-number";
@@ -1708,6 +1737,9 @@ function loadTasksIntoCustomizer() {
         const name = document.createElement("span");
         name.className = "customizer-task-name";
         name.textContent = taskText;
+
+        const actions = document.createElement("div");
+        actions.className = "customizer-task-actions";
 
         const editButton = document.createElement("button");
         editButton.type = "button";
@@ -1721,42 +1753,164 @@ function loadTasksIntoCustomizer() {
         deleteButton.dataset.index = index;
         deleteButton.textContent = "Delete";
 
+        actions.appendChild(editButton);
+        actions.appendChild(deleteButton);
+
         taskRow.appendChild(number);
         taskRow.appendChild(name);
-        taskRow.appendChild(editButton);
-        taskRow.appendChild(deleteButton);
+        taskRow.appendChild(actions);
 
-        customizerTaskList.appendChild(taskRow);
+        return taskRow;
+    }
+
+    const editor = document.createElement("div");
+    editor.className = "customizer-task-editor";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "customizer-task-input";
+    input.value = taskText;
+    input.dataset.index = index;
+    input.setAttribute("aria-label", "Task name");
+
+    const editorActions = document.createElement("div");
+    editorActions.className = "customizer-task-editor-actions";
+
+    const saveButton = document.createElement("button");
+    saveButton.type = "button";
+    saveButton.className = "btn btn-primary save-task-name-btn";
+    saveButton.dataset.index = index;
+    saveButton.textContent = "Save";
+
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.className = "btn btn-ghost cancel-task-name-btn";
+    cancelButton.dataset.index = index;
+    cancelButton.textContent = "Cancel";
+
+    editorActions.appendChild(saveButton);
+    editorActions.appendChild(cancelButton);
+
+    editor.appendChild(input);
+    editor.appendChild(editorActions);
+
+    const error = document.createElement("p");
+    error.className = "customizer-task-error";
+    error.hidden = true;
+
+    // Enter commits, Escape backs out - so the editor never traps the user.
+    input.addEventListener("keydown", (event) => {
+
+        if (event.key === "Enter") {
+            event.preventDefault();
+            commitTaskNameEditor(taskRow, index);
+        }
+
+        if (event.key === "Escape") {
+            event.preventDefault();
+            closeTaskNameEditor(taskRow, index);
+        }
+
     });
+
+    taskRow.appendChild(editor);
+    taskRow.appendChild(error);
+
+    // Prefilled and ready to overwrite, matching the old prompt() behaviour.
+    input.focus();
+    input.select();
+
+    return taskRow;
 }
 
-// =====================================================
-// TASK CUSTOMIZER - EDIT TASK
-// =====================================================
-
-document.addEventListener("click", (event) => {
-
-    const editButton = event.target.closest(".edit-task-btn");
-
-    if (!editButton) return;
-
-    const index = Number(editButton.dataset.index);
+function openTaskNameEditor(taskRow, index) {
 
     const taskNames = getTaskNames();
 
-    const currentName = taskNames[index];
+    const taskText = taskNames[index];
 
-    const newName = prompt(
-        "Edit task name:",
-        currentName
+    if (typeof taskText !== "string") return;
+
+    // Only one editor at a time, so close any other open row first.
+    if (editingTaskIndex !== null && editingTaskIndex !== index) {
+
+        const taskNamesNow = getTaskNames();
+        const previousRow = taskRow.parentElement
+            ?.querySelector(
+                `.customizer-task-row[data-index="${editingTaskIndex}"]`
+            );
+
+        if (previousRow) {
+
+            closeTaskNameEditor(
+                previousRow,
+                editingTaskIndex,
+                taskNamesNow[editingTaskIndex]
+            );
+        }
+
+    }
+
+    editingTaskIndex = index;
+
+    renderCustomizerTaskRow(taskRow, index, taskText);
+}
+
+function closeTaskNameEditor(taskRow, index, taskText) {
+
+    const taskNames = getTaskNames();
+
+    editingTaskIndex = null;
+
+    renderCustomizerTaskRow(
+        taskRow,
+        index,
+        typeof taskText === "string"
+            ? taskText
+            : taskNames[index]
     );
 
-    if (newName === null) return;
+    // Return the user to the control they came from.
+    const editButton =
+        taskRow.querySelector(".edit-task-btn");
 
-    const trimmedName = newName.trim();
+    if (editButton) editButton.focus();
+}
 
+function commitTaskNameEditor(taskRow, index) {
+
+    const input =
+        taskRow.querySelector(".customizer-task-input");
+
+    if (!input) return;
+
+    const error =
+        taskRow.querySelector(".customizer-task-error");
+
+    const trimmedName = input.value.trim();
+
+    // An empty name is rejected in place, leaving the editor open so the
+    // typed text is never thrown away.
     if (!trimmedName) {
-        alert("Task name cannot be empty.");
+
+        if (error) {
+            error.textContent = "Task name cannot be empty.";
+            error.hidden = false;
+        }
+
+        input.focus();
+
+        return;
+    }
+
+    const taskNames = getTaskNames();
+
+    // Saving an unchanged name is a no-op: nothing is written and the row
+    // simply returns to its read view.
+    if (taskNames[index] === trimmedName) {
+
+        closeTaskNameEditor(taskRow, index, trimmedName);
+
         return;
     }
 
@@ -1767,8 +1921,96 @@ document.addEventListener("click", (event) => {
         JSON.stringify(taskNames)
     );
 
-    renderTaskList();
-    loadTasksIntoCustomizer();
+    syncRenamedTaskLabel(index, trimmedName);
+
+    // Only the notifications list caches a task name; refresh it so a rename
+    // cannot go stale there. The dashboard is patched in place instead of
+    // re-rendered, which keeps checkboxes, progress, XP and streaks exactly
+    // as they were.
+    if (notificationTaskList) {
+        renderNotificationTaskList();
+    }
+
+    closeTaskNameEditor(taskRow, index, trimmedName);
+}
+
+// A rename does not change completion state or any statistic, so the visible
+// label is updated directly rather than rebuilding the whole task list.
+function syncRenamedTaskLabel(index, name) {
+
+    const task = document.querySelectorAll(
+        "#taskList .task"
+    )[index];
+
+    if (!task) return;
+
+    const label = task.querySelector("span");
+
+    if (label) label.textContent = name;
+}
+
+// =====================================================
+// TASK CUSTOMIZER - EDIT TASK
+// =====================================================
+
+document.addEventListener("click", (event) => {
+
+    const editButton =
+        event.target.closest(".edit-task-btn");
+
+    if (editButton) {
+
+        const taskRow = editButton.closest(
+            ".customizer-task-row"
+        );
+
+        if (!taskRow) return;
+
+        openTaskNameEditor(
+            taskRow,
+            Number(editButton.dataset.index)
+        );
+
+        return;
+    }
+
+    const saveButton =
+        event.target.closest(".save-task-name-btn");
+
+    if (saveButton) {
+
+        const taskRow = saveButton.closest(
+            ".customizer-task-row"
+        );
+
+        if (!taskRow) return;
+
+        commitTaskNameEditor(
+            taskRow,
+            Number(saveButton.dataset.index)
+        );
+
+        return;
+    }
+
+    const cancelButton =
+        event.target.closest(".cancel-task-name-btn");
+
+    if (cancelButton) {
+
+        const taskRow = cancelButton.closest(
+            ".customizer-task-row"
+        );
+
+        if (!taskRow) return;
+
+        const index = Number(cancelButton.dataset.index);
+
+        closeTaskNameEditor(taskRow, index);
+
+        return;
+    }
+
 });
 
 
@@ -5682,9 +5924,6 @@ function startSmartNotifications() {
     const settingsCustomizeBtn =
         document.getElementById("settingsCustomizeBtn");
 
-    const settingsThemeBtn =
-        document.getElementById("settingsThemeBtn");
-
     const settingsNotificationsBtn =
         document.getElementById("settingsNotificationsBtn");
 
@@ -5744,13 +5983,13 @@ function startSmartNotifications() {
     showPage("dashboard");
 
     // Keep the extra theme controls synchronized after the existing
-    // theme button is used.
+    // theme button is used. (The settings Appearance card is a radio group
+    // wired up in initializeTheme(); there is no settings theme button.)
     if (themeToggle) {
         themeToggle.addEventListener("click", () => {
             const text = themeToggle.textContent;
 
             if (menuThemeBtn) menuThemeBtn.textContent = text;
-            if (settingsThemeBtn) settingsThemeBtn.textContent = text;
         });
     }
 
