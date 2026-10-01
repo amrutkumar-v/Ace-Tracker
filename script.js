@@ -3930,6 +3930,13 @@ function openTaskNotificationEditor(index) {
         overlay
     );
 
+    // style.css keeps .task-notification-editor hidden (display: none) and
+    // only centres its content once it is a flex container, so the overlay has
+    // to be revealed explicitly after it enters the DOM. Without this the Edit
+    // button silently does nothing.
+    overlay.style.display =
+        "flex";
+
 }
 
 
