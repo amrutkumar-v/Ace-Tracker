@@ -200,7 +200,6 @@ const ctx = document.getElementById("weeklyChart");
 const pieCtx = document.getElementById("pieChart");
 
 // Controls & Actions
-const themeToggle = document.getElementById("themeToggle");
 const exportBtn = document.getElementById("exportBtn");
 const loginScreen = document.getElementById("loginScreen");
 const loginBtn = document.getElementById("loginBtn");
@@ -2765,17 +2764,7 @@ const NOTIFICATION_KEYS = {
 
     goldenDayEnabled: "aceGoldenDayNotificationEnabled",
 
-    lastNotification: "aceLastNotification",
-
-    dailyReminderTime: "aceDailyReminderTime",
-
-    dailyReminderEnabled: "aceDailyReminderEnabled",
-
-    streakReminderEnabled: "aceStreakReminderEnabled",
-
-    waterReminderEnabled: "aceWaterReminderEnabled",
-
-    skillReminderEnabled: "aceSkillReminderEnabled"
+    lastNotification: "aceLastNotification"
 
 };
 
@@ -3978,21 +3967,6 @@ const permissionStatus =
 const nextReminder =
     document.getElementById("nextReminder");
 
-const dailyReminderTime =
-    document.getElementById("dailyReminderTime");
-
-const dailyReminderEnabled =
-    document.getElementById("dailyReminderEnabled");
-
-const streakReminderEnabled =
-    document.getElementById("streakReminderEnabled");
-
-const waterReminderEnabled =
-    document.getElementById("waterReminderEnabled");
-
-const skillReminderEnabled =
-    document.getElementById("skillReminderEnabled");
-
 
 // =====================================================
 // NOTIFICATION INITIALIZATION
@@ -4129,6 +4103,7 @@ function initializeNotifications() {
     updateNotificationUI();
     loadNotificationSettings();
     bindNotificationControlCenter();
+    bindDiagnosticsRefresh();
 
     // Open settings
     if (notificationSettingsBtn) {
@@ -4142,6 +4117,7 @@ function initializeNotifications() {
             }
 
             updatePermissionStatus();
+            refreshPushDiagnostics();
 
         });
 
@@ -4226,6 +4202,19 @@ function pushApiFetch(path, options = {}) {
     return fetch(`${PUSH_SERVER_URL}${path}`, {
         ...options,
         credentials: "include"
+    }).then(async response => {
+        // If session expired or invalid, clear cached session and retry once
+        if (response.status === 401) {
+            pushSessionPromise = null;
+            cachedPushSubscription = null;
+            // Retry the request once after session reset
+            const retryResponse = await fetch(`${PUSH_SERVER_URL}${path}`, {
+                ...options,
+                credentials: "include"
+            });
+            return retryResponse;
+        }
+        return response;
     });
 }
 
@@ -4244,7 +4233,12 @@ async function ensurePushSession() {
             });
     }
 
-    return pushSessionPromise;
+    try {
+        return await pushSessionPromise;
+    } catch (error) {
+        pushSessionPromise = null;
+        throw error;
+    }
 }
 
 async function subscribeToPushNotifications() {
@@ -4431,7 +4425,22 @@ async function syncTaskReminderToServer(taskId, taskSettings) {
         );
 
         if (!scheduleResponse.ok) {
-            console.error("❌ Could not schedule backend reminder.");
+            const status = scheduleResponse.status;
+            // Subscription may be stale (deleted on backend, VAPID key changed, etc.)
+            if (status === 404 || status === 410 || status === 403) {
+                console.warn(`⚠️ Subscription invalid (${status}), clearing cache and retrying...`);
+                cachedPushSubscription = null;
+                backgroundPushActive = false;
+                // Retry once with fresh subscription
+                const subscribed = await subscribeToPushNotifications();
+                if (subscribed) {
+                    subscription = await getExistingPushSubscription();
+                    if (subscription) {
+                        return syncTaskReminderToServer(taskId, taskSettings);
+                    }
+                }
+            }
+            console.error("❌ Could not schedule backend reminder:", await scheduleResponse.text());
             return;
         }
 
@@ -4538,14 +4547,16 @@ async function sendTestPushNotification() {
         }
 
         if (permissionStatus) {
-            permissionStatus.textContent = "Test push sent. Your system notification should appear shortly.";
+            // Be honest: backend accepted the Web Push request, but actual OS delivery
+            // depends on browser push service, network, and OS notification settings.
+            permissionStatus.textContent = `Backend accepted test push (delivered to ${result.delivered}/${result.attempted} subscriptions). Check your system notifications.`;
         }
 
     } catch (error) {
 
         console.error("❌ Test push failed:", error);
         if (permissionStatus) {
-            permissionStatus.textContent = "Test failed. Check your connection and try again.";
+            permissionStatus.textContent = `Test failed: ${error.message}. Check connection and try again.`;
         }
 
     }
@@ -4736,104 +4747,169 @@ function loadNotificationSettings() {
 
     renderNotificationTaskList();
 
-    if (dailyReminderTime) {
-
-        dailyReminderTime.value =
-            localStorage.getItem(
-                NOTIFICATION_KEYS.dailyReminderTime
-            ) || "20:00";
-
-    }
-
-    if (dailyReminderEnabled) {
-
-        dailyReminderEnabled.checked =
-            localStorage.getItem(
-                NOTIFICATION_KEYS.dailyReminderEnabled
-            ) === "true";
-
-    }
-
-    if (streakReminderEnabled) {
-
-        streakReminderEnabled.checked =
-            localStorage.getItem(
-                NOTIFICATION_KEYS.streakReminderEnabled
-            ) === "true";
-
-    }
-
-    if (waterReminderEnabled) {
-
-        waterReminderEnabled.checked =
-            localStorage.getItem(
-                NOTIFICATION_KEYS.waterReminderEnabled
-            ) === "true";
-
-    }
-
-    if (skillReminderEnabled) {
-
-        skillReminderEnabled.checked =
-            localStorage.getItem(
-                NOTIFICATION_KEYS.skillReminderEnabled
-            ) === "true";
-
-    }
-
 }
 
 
-// =====================================================
+/* =====================================================
+// PUSH DIAGNOSTICS
+===================================================== */
+
+const DIAGNOSTIC_STATES = {
+    READY: "READY",
+    NOT_ENABLED: "NOT ENABLED",
+    BLOCKED: "BLOCKED",
+    OFFLINE: "OFFLINE",
+    FAILED: "FAILED",
+    UNKNOWN: "UNKNOWN"
+};
+
+const DIAGNOSTIC_LABELS = {
+    browserPermission: "Browser permission",
+    serviceWorker: "Service worker",
+    pushAPI: "Push API",
+    backend: "Backend",
+    secureSession: "Secure session",
+    pushSubscription: "Push subscription",
+    reminderScheduler: "Reminder scheduler"
+};
+
+async function runPushDiagnostics() {
+    const results = {};
+
+    // Browser permission
+    if (!("Notification" in window)) {
+        results.browserPermission = { state: DIAGNOSTIC_STATES.BLOCKED, detail: "Notifications not supported" };
+    } else if (Notification.permission === "granted") {
+        results.browserPermission = { state: DIAGNOSTIC_STATES.READY, detail: "Granted" };
+    } else if (Notification.permission === "denied") {
+        results.browserPermission = { state: DIAGNOSTIC_STATES.BLOCKED, detail: "Blocked by user" };
+    } else {
+        results.browserPermission = { state: DIAGNOSTIC_STATES.NOT_ENABLED, detail: "Not prompted yet" };
+    }
+
+    // Service worker
+    if (!("serviceWorker" in navigator)) {
+        results.serviceWorker = { state: DIAGNOSTIC_STATES.BLOCKED, detail: "Service Worker not supported" };
+    } else {
+        try {
+            const reg = await navigator.serviceWorker.ready;
+            if (reg.active) {
+                results.serviceWorker = { state: DIAGNOSTIC_STATES.READY, detail: "Active and controlling" };
+            } else {
+                results.serviceWorker = { state: DIAGNOSTIC_STATES.NOT_ENABLED, detail: "Registered but not active" };
+            }
+        } catch (e) {
+            results.serviceWorker = { state: DIAGNOSTIC_STATES.FAILED, detail: e.message };
+        }
+    }
+
+    // Push API
+    if (!("PushManager" in window)) {
+        results.pushAPI = { state: DIAGNOSTIC_STATES.BLOCKED, detail: "Push API not supported" };
+    } else {
+        results.pushAPI = { state: DIAGNOSTIC_STATES.READY, detail: "Supported" };
+    }
+
+    // Backend + Secure session + Push subscription + Scheduler
+    try {
+        const response = await pushApiFetch("/push-status");
+        if (response.ok) {
+            const data = await response.json();
+            results.backend = { state: DIAGNOSTIC_STATES.READY, detail: "Online" };
+            results.secureSession = { state: data.session === "authenticated" ? DIAGNOSTIC_STATES.READY : DIAGNOSTIC_STATES.FAILED, detail: data.session };
+            results.pushSubscription = { state: data.subscription === "registered" ? DIAGNOSTIC_STATES.READY : DIAGNOSTIC_STATES.NOT_ENABLED, detail: data.subscription };
+            results.reminderScheduler = { state: data.scheduler === "running" ? DIAGNOSTIC_STATES.READY : DIAGNOSTIC_STATES.FAILED, detail: data.scheduler };
+            results.vapidConfigured = data.vapidConfigured;
+        } else if (response.status === 401) {
+            results.backend = { state: DIAGNOSTIC_STATES.NOT_ENABLED, detail: "Session expired" };
+            results.secureSession = { state: DIAGNOSTIC_STATES.NOT_ENABLED, detail: "No valid session" };
+            results.pushSubscription = { state: DIAGNOSTIC_STATES.NOT_ENABLED, detail: "Requires session" };
+            results.reminderScheduler = { state: DIAGNOSTIC_STATES.UNKNOWN, detail: "Requires session" };
+        } else {
+            results.backend = { state: DIAGNOSTIC_STATES.FAILED, detail: `HTTP ${response.status}` };
+            results.secureSession = { state: DIAGNOSTIC_STATES.FAILED, detail: "Backend error" };
+            results.pushSubscription = { state: DIAGNOSTIC_STATES.FAILED, detail: "Backend error" };
+            results.reminderScheduler = { state: DIAGNOSTIC_STATES.FAILED, detail: "Backend error" };
+        }
+    } catch (e) {
+        results.backend = { state: DIAGNOSTIC_STATES.OFFLINE, detail: e.message };
+        results.secureSession = { state: DIAGNOSTIC_STATES.OFFLINE, detail: "Network error" };
+        results.pushSubscription = { state: DIAGNOSTIC_STATES.OFFLINE, detail: "Network error" };
+        results.reminderScheduler = { state: DIAGNOSTIC_STATES.OFFLINE, detail: "Network error" };
+    }
+
+    return results;
+}
+
+function renderPushDiagnostics(results) {
+    const container = document.getElementById("pushDiagnosticsList");
+    if (!container) return;
+
+    const order = [
+        "browserPermission",
+        "serviceWorker",
+        "pushAPI",
+        "backend",
+        "secureSession",
+        "pushSubscription",
+        "reminderScheduler"
+    ];
+
+    container.innerHTML = "";
+
+    for (const key of order) {
+        const item = results[key];
+        if (!item) continue;
+
+        const row = document.createElement("div");
+        row.className = "diagnostic-row";
+
+        const stateClass = `diagnostic-${item.state.toLowerCase().replace(" ", "-")}`;
+
+        row.innerHTML = `
+            <span class="diagnostic-label">${DIAGNOSTIC_LABELS[key] || key}</span>
+            <span class="diagnostic-state ${stateClass}">${item.state}</span>
+            <span class="diagnostic-detail">${item.detail || ""}</span>
+        `;
+
+        container.appendChild(row);
+    }
+}
+
+async function refreshPushDiagnostics() {
+    const btn = document.getElementById("refreshDiagnosticsBtn");
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Checking...";
+    }
+
+    try {
+        const results = await runPushDiagnostics();
+        renderPushDiagnostics(results);
+    } catch (e) {
+        console.error("Diagnostics failed:", e);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Refresh";
+        }
+    }
+}
+
+function bindDiagnosticsRefresh() {
+    const btn = document.getElementById("refreshDiagnosticsBtn");
+    if (btn && !btn.dataset.aceBound) {
+        btn.dataset.aceBound = "true";
+        btn.addEventListener("click", refreshPushDiagnostics);
+    }
+}
+
+
+/* =====================================================
 // SAVE SETTINGS
-// =====================================================
+===================================================== */
 
 function saveNotificationPreferences() {
-
-    if (dailyReminderTime) {
-
-        localStorage.setItem(
-            NOTIFICATION_KEYS.dailyReminderTime,
-            dailyReminderTime.value
-        );
-
-    }
-
-    if (dailyReminderEnabled) {
-
-        localStorage.setItem(
-            NOTIFICATION_KEYS.dailyReminderEnabled,
-            dailyReminderEnabled.checked
-        );
-
-    }
-
-    if (streakReminderEnabled) {
-
-        localStorage.setItem(
-            NOTIFICATION_KEYS.streakReminderEnabled,
-            streakReminderEnabled.checked
-        );
-
-    }
-
-    if (waterReminderEnabled) {
-
-        localStorage.setItem(
-            NOTIFICATION_KEYS.waterReminderEnabled,
-            waterReminderEnabled.checked
-        );
-
-    }
-
-    if (skillReminderEnabled) {
-
-        localStorage.setItem(
-            NOTIFICATION_KEYS.skillReminderEnabled,
-            skillReminderEnabled.checked
-        );
-
-    }
 
     const goldenSwitch =
         document.getElementById("goldenDayNotificationEnabled");
@@ -5482,7 +5558,7 @@ function sendTaskNotification(
 // CHECK ONE TASK
 // =====================================================
 
-function checkTaskNotification(
+async function checkTaskNotification(
     index,
     taskName,
     settings
@@ -5495,7 +5571,13 @@ function checkTaskNotification(
     );
 
     // Backend push is the source of truth for closed-tab reminders.
-    if (backgroundPushActive) {
+    // Check actual backend state rather than just in-memory flag.
+    const subscription = await getExistingPushSubscription();
+    const masterOn = isMasterNotificationsOn();
+    const hasValidSubscription = subscription && subscription.endpoint;
+    if (masterOn && hasValidSubscription) {
+        // Background push is configured - local notifications not needed
+        // when tab is open since backend will handle reminders
         return;
     }
 
@@ -5689,7 +5771,7 @@ function checkDailyReminderNotification() {
 // MAIN SMART NOTIFICATION CHECKER
 // =====================================================
 
-function runSmartNotificationCheck() {
+async function runSmartNotificationCheck() {
 
     // Master notification switch
     if (!areNotificationsEnabled()) {
@@ -5714,27 +5796,22 @@ function runSmartNotificationCheck() {
     const settings = getTaskNotificationSettings();
 
     // Check every task
-    taskNames.forEach((taskName, index) => {
-
+    for (let index = 0; index < taskNames.length; index += 1) {
+        const taskName = taskNames[index];
         const taskSettings = settings[index];
 
         if (!taskSettings) {
-            return;
+            continue;
         }
 
-        checkTaskNotification(
-            index,
-            taskName,
-            taskSettings
-        );
-
-    });
+        await checkTaskNotification(index, taskName, taskSettings);
+    }
 
     // Check daily reminder
-checkDailyReminderNotification();
+    checkDailyReminderNotification();
 
-// Check Golden Day
-checkGoldenDayNotification();
+    // Check Golden Day
+    checkGoldenDayNotification();
 
 }
 
@@ -5760,13 +5837,13 @@ function startSmartNotifications() {
         const delay = Math.max(250, nextMinute.getTime() - now.getTime());
 
         smartNotificationTimer = setTimeout(() => {
-            runSmartNotificationCheck();
+            runSmartNotificationCheck().catch(err => console.error("Smart notification check failed:", err));
             scheduleNextCheck();
         }, delay);
     }
 
     // Check immediately so an already-due reminder is not missed.
-    runSmartNotificationCheck();
+    runSmartNotificationCheck().catch(err => console.error("Smart notification check failed:", err));
     scheduleNextCheck();
 
     console.log(
@@ -5981,16 +6058,5 @@ function startSmartNotifications() {
 
     // Start on Dashboard.
     showPage("dashboard");
-
-    // Keep the extra theme controls synchronized after the existing
-    // theme button is used. (The settings Appearance card is a radio group
-    // wired up in initializeTheme(); there is no settings theme button.)
-    if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-            const text = themeToggle.textContent;
-
-            if (menuThemeBtn) menuThemeBtn.textContent = text;
-        });
-    }
 
 })();

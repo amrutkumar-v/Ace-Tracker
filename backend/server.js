@@ -21,6 +21,12 @@ const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(__dirname, "data
 const DATABASE_FILE = path.join(DATA_DIR, "ace-tracker.sqlite");
 
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
+
+// Scheduler health state
+let schedulerStartedAt = null;
+let lastSchedulerRun = null;
+let lastSuccessfulSchedulerRun = null;
+let lastSchedulerError = null;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT;
 
@@ -155,10 +161,13 @@ function getSession(req) {
 }
 
 function setSessionCookie(res, session) {
+    const isCrossOrigin = allowedOrigins.length > 0;
     res.cookie("ace_session", session.id, {
         httpOnly: true,
-        sameSite: "strict",
-        secure: COOKIE_SECURE,
+        // Cross-origin (Vercel frontend + separate backend) requires SameSite=None + Secure.
+        // Same-origin (local dev or single-node) can use Lax for better CSRF protection.
+        sameSite: isCrossOrigin ? "none" : "lax",
+        secure: isCrossOrigin ? true : COOKIE_SECURE,
         maxAge: SESSION_TTL_DAYS * 24 * 60 * 60 * 1000,
         path: "/"
     });
@@ -492,9 +501,35 @@ app.post("/api/send-test", requireSession, async (req, res) => {
     res.json({ success: delivered > 0, delivered, attempted: subscriptions.length });
 });
 
+app.get("/api/push-status", requireSession, (req, res) => {
+    const subscription = db.prepare(
+        "SELECT endpoint FROM subscriptions WHERE session_id = ?"
+    ).get(req.aceSession.id);
+
+    const reminderCount = db.prepare(
+        "SELECT COUNT(*) AS count FROM reminders WHERE session_id = ?"
+    ).get(req.aceSession.id);
+
+    res.json({
+        backend: "online",
+        vapidConfigured: Boolean(VAPID_PUBLIC_KEY),
+        scheduler: schedulerStartedAt ? "running" : "stopped",
+        schedulerStartedAt,
+        lastSchedulerRun,
+        lastSuccessfulSchedulerRun,
+        lastSchedulerError,
+        session: "authenticated",
+        subscription: subscription ? "registered" : "none",
+        reminders: reminderCount.count || 0
+    });
+});
+
 async function processReminders() {
     const now = new Date();
-    const rows = db.prepare(
+    lastSchedulerRun = now.toISOString();
+
+    try {
+        const rows = db.prepare(
         `SELECT reminders.id, reminders.reminder_json, subscriptions.endpoint, subscriptions.subscription_json
          FROM reminders
          INNER JOIN subscriptions ON subscriptions.endpoint = reminders.endpoint`
@@ -545,12 +580,21 @@ async function processReminders() {
         reminder.nextRunAt = calculateNextRun(reminder, new Date(now.getTime() + 1000)).toISOString();
         saveReminder(reminder);
     }
+
+    lastSuccessfulSchedulerRun = new Date().toISOString();
+    lastSchedulerError = null;
+} catch (error) {
+    lastSchedulerError = { message: error.message, at: new Date().toISOString() };
+    console.error("Reminder worker error:", error);
+}
+
 }
 
 setInterval(() => {
-    processReminders().catch(error => console.error("Reminder worker error:", error));
+    processReminders();
 }, 5000);
-processReminders().catch(error => console.error("Initial reminder worker error:", error));
+schedulerStartedAt = new Date().toISOString();
+processReminders();
 
 // Only explicit public files are served. Secrets, database files, and backend
 // source remain unreachable from the public site.

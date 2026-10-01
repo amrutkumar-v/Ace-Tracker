@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "check": "node --check server.js",
-    "test": "npm run check && node --check ../script.js && node --check ../service-worker.js"
+    "test": "node test.js"
   },
   "keywords": [],
   "author": "",

@@ -517,7 +517,6 @@ h1, h2, h3, h4 {
 .edit-task-btn,
 .delete-task-btn,
 #logoutBtn,
-#themeToggle,
 #resetBtn,
 #taskCustomizerBtn {
     display: inline-flex;
@@ -548,8 +547,7 @@ h1, h2, h3, h4 {
 .login-box button:hover,
 #enableNotificationsBtn:hover,
 .save-task-notification:hover,
-.popup-content button:hover,
-#themeToggle:hover {
+.popup-content button:hover {
     background: var(--border-mid);
     border-color: var(--border-mid);
 }
@@ -576,8 +574,7 @@ h1, h2, h3, h4 {
 .login-box button,
 #enableNotificationsBtn,
 .save-task-notification,
-.popup-content button,
-#themeToggle {
+.popup-content button {
     background: var(--accent);
     color: var(--on-accent);
     border-color: var(--accent);
@@ -1859,6 +1856,98 @@ select {
 
 .save-notification-btn {
     margin-top: var(--sp-5);
+}
+
+/* --- Diagnostics --- */
+.notification-diagnostics {
+    margin-top: var(--sp-5);
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--border);
+}
+
+.notification-diagnostics h3 {
+    margin: 0 0 var(--sp-2);
+    font-size: var(--fs-base);
+    font-weight: 600;
+}
+
+.notification-diagnostics > p {
+    margin: 0 0 var(--sp-3);
+    color: var(--text-3);
+    font-size: var(--fs-sm);
+    line-height: 1.45;
+}
+
+.diagnostics-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-3);
+}
+
+.diagnostic-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    font-size: var(--fs-sm);
+}
+
+.diagnostic-label {
+    color: var(--text-2);
+    font-weight: 500;
+    min-width: 140px;
+}
+
+.diagnostic-state {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: var(--fs-xs);
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-sm);
+    white-space: nowrap;
+    text-align: center;
+    min-width: 80px;
+}
+
+.diagnostic-ready { background: var(--pos-bg); color: var(--pos); }
+.diagnostic-not-enabled { background: var(--accent-bg); color: var(--accent); }
+.diagnostic-blocked { background: var(--neg-bg); color: var(--neg); }
+.diagnostic-offline { background: var(--border); color: var(--text-2); }
+.diagnostic-failed { background: var(--neg-bg); color: var(--neg); }
+.diagnostic-unknown { background: var(--surface-3); color: var(--text-3); }
+
+.diagnostic-detail {
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+    text-align: right;
+    min-width: 120px;
+}
+
+.diagnostics-refresh {
+    width: 100%;
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--t-fast) ease;
+}
+
+.diagnostics-refresh:hover:not(:disabled) {
+    background: var(--border-mid);
+}
+
+.diagnostics-refresh:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 /* --- Switch --- */
