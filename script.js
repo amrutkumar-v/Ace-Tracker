@@ -4189,8 +4189,9 @@ function initializeNotifications() {
 // path (/api), which is correct for local development or a single-node host.
 const PUSH_SERVER_URL = (
     (typeof window.ACE_API_URL === "string" && window.ACE_API_URL.trim())
-    || `${window.location.origin}/api`
-).replace(/\/$/, "");
+        ? window.ACE_API_URL.trim().replace(/\/$/, "") + "/api"
+        : `${window.location.origin}/api`
+);
 
 let cachedPushSubscription = null;
 let backgroundPushActive = false;
